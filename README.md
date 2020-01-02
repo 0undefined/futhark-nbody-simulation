@@ -19,6 +19,14 @@ Of the implementations we would compare speed and draw conclusions
 scaling/implementation wise.
 
 
+
+# Roadmap (country-roads edition)
+
+* [x] Get Lys working
+* [ ] Add naive implementation to Lys 
+* [ ] Create benchmarking stuff
+* [ ] Implement Octree
+
 ## Barnes hut sources
 
 * ["The barnes hut algorithm"](https://www.tp1.ruhr-uni-bochum.de/~grauer/lectures/compI_IIWS1819/pdfs/lec10.pdf),
