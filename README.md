@@ -28,3 +28,6 @@ scaling/implementation wise.
   CUDA implementation paper, M. Burtscher, K. Pingali.
   + [slideshow](https://www.cs.utexas.edu/~pingali/CS395T/2009fa/lectures/Barnes-Hut.pdf)
     (basically the same thing in a different format)
+* [Wikipedia](https://en.wikipedia.org/wiki/Barnes%E2%80%93Hut_simulation)
+* [Octrees](https://devblogs.nvidia.com/wp-content/uploads/2012/11/karras2012hpg_paper.pdf)
+  Paper from Tero Karras
