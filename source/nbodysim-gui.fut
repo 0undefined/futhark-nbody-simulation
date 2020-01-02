@@ -36,11 +36,10 @@ module lys: lys with text_content = text_content = {
     case _ -> s
 
   let render (s: state) =
-    render s.objects s.height s.width
+    tabulate_2d s.height s.width (\_ _ -> argb.black)
 
   type text_content = text_content
-  let text_format = "FPS: %d"
+  let text_format   = "FPS: %d"
   let text_colour _ = argb.white
-  let text_content fps (s: state) =
-    (t32 fps)
+  let text_content fps (s: state) = (t32 fps)
 }
