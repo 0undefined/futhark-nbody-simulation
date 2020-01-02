@@ -21,7 +21,7 @@ type pointmass = {
 
 
 let render (objects: []pointmass) (h: i32) (w: i32): [h][w]argb.colour =
-  map (\_ -> replicate w argb.black) (iota h)
+  tabulate_2d h w (\_ -> argb.black)
 
 
 let step [n] (o: [n]pointmass) : [n]pointmass =
