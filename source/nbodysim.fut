@@ -9,6 +9,25 @@ type v3 = v3.vector
 --let rng = minstd_rand.rng_from_seed [0]
 --module r = uniform_float_distribution f32 minstd_rand
 
+-- Creating Morton codes, taken from
+-- https://github.com/athas/raytracingthenextweekinfuthark/blob/master/bvh.fut
+-- | Expands a 10-bit integer into 30 bits by inserting 2 zeros after
+-- each bit.
+-- let expand_bits (v: u32) : u32 =
+--   let v = (v * 0x00010001) & 0xFF0000FF
+--   let v = (v * 0x00000101) & 0x0F00F00F
+--   let v = (v * 0x00000011) & 0xC30C30C3
+--   let v = (v * 0x00000005) & 0x49249249
+--   in v
+-- let morton_3D {x,y,z} : u32 =
+--   let x = f32.min (f32.max(x * 1024) 0) 1023
+--   let y = f32.min (f32.max(y * 1024) 0) 1023
+--   let z = f32.min (f32.max(z * 1024) 0) 1023
+--   let xx = expand_bits (u32.f32 x)
+--   let yy = expand_bits (u32.f32 y)
+--   let zz = expand_bits (u32.f32 z)
+--   in xx * 4 + yy * 2 + zz
+
 
 -- Constructor for v3
 let vec x y z = {x, y, z}
