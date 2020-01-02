@@ -38,11 +38,6 @@ type pointmass = {
   mass: f32
 }
 
-
-let render (objects: []pointmass) (h: i32) (w: i32): [h][w]argb.colour =
-  tabulate_2d h w (\_ -> argb.black)
-
-
 let step [n] (o: [n]pointmass) : [n]pointmass =
   -- Gen sparse octree
   --   Foreach node, [8]children*, parent, center of mass, mass
@@ -51,7 +46,6 @@ let step [n] (o: [n]pointmass) : [n]pointmass =
   -- Travers/apply forces
   -- *sparse, so at max we will have 8 children per node
   o
-
 
 let main : f32 =
   0f32
