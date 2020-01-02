@@ -1,5 +1,19 @@
-*
-!*.fut
-!Makefile
-!*.pkg
-!README.md
+# Source code stuffs
+source/*
+source/*.c
+!source/*.fut
+!source/Makefile
+!source/*.pkg
+!source/README.md
+
+# Archives
+*.xz
+*.tar
+
+# Latex stuffs
+report/*.out
+report/*.toc
+report/*.log
+report/*.aux
+report/*.bcf
+report/*.pdf
