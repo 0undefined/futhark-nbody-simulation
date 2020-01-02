@@ -19,13 +19,13 @@ Of the implementations we would compare speed and draw conclusions
 scaling/implementation wise.
 
 
-
 # Roadmap (country-roads edition)
 
 * [x] Get Lys working
-* [ ] Add naive implementation to Lys 
+* [ ] Add naive implementation to Lys
 * [ ] Create benchmarking stuff
 * [ ] Implement Octree
+
 
 ## Barnes hut sources
 
@@ -39,3 +39,5 @@ scaling/implementation wise.
 * [Wikipedia](https://en.wikipedia.org/wiki/Barnes%E2%80%93Hut_simulation)
 * [Octrees](https://devblogs.nvidia.com/wp-content/uploads/2012/11/karras2012hpg_paper.pdf)
   Paper from Tero Karras
+* [Sparse Octree gravitational N-body code](https://arxiv.org/pdf/1106.1900v1.pdf)
+  Jeroen Bedorf et al.
