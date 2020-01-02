@@ -1,0 +1,5 @@
+*
+!*.fut
+!Makefile
+!*.pkg
+!README.md
