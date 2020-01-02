@@ -1,6 +1,8 @@
 # Source code stuffs
 source/*
 source/*.c
+source/*.h
+source/*.o
 !source/*.fut
 !source/Makefile
 !source/*.pkg
