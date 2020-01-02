@@ -17,3 +17,4 @@ report/*.log
 report/*.aux
 report/*.bcf
 report/*.pdf
+report/*.xml
