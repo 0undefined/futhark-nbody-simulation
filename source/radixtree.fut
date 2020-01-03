@@ -1,3 +1,4 @@
+import "lib/github.com/athas/vector/vspace"
 -- Creating Morton codes, taken from
 -- https://github.com/athas/raytracingthenextweekinfuthark/blob/master/bvh.fut
 -- | Expands a 10-bit integer into 30 bits by inserting 2 zeros after
@@ -9,20 +10,43 @@ let expand_bits (v: u32) : u32 =
   let v = (v * 0x00000005) & 0x49249249
   in v
 
-let morton_3D {x,y,z} : u32 =
-  let x = f32.min (f32.max(x * 1024) 0) 1023
-  let y = f32.min (f32.max(y * 1024) 0) 1023
-  let z = f32.min (f32.max(z * 1024) 0) 1023
-  let xx = expand_bits (u32.f32 x)
-  let yy = expand_bits (u32.f32 y)
-  let zz = expand_bits (u32.f32 z)
-  in xx * 4 + yy * 2 + zz
+module vspace = mk_vspace_3d f32
+type v3 = vspace.vector
+
+-- let morton_3D {x,y,z} : u32 =
+--   let x = f32.min (f32.max(x * 1024) 0) 1023
+--   let y = f32.min (f32.max(y * 1024) 0) 1023
+--   let z = f32.min (f32.max(z * 1024) 0) 1023
+--   let xx = expand_bits (u32.f32 x)
+--   let yy = expand_bits (u32.f32 y)
+--   let zz = expand_bits (u32.f32 z)
+--   in xx * 4 + yy * 2 + zz
+
+let morton30bit {x, y, z} =
+    let clamp10bit : f32 -> f32 =
+      (*) 1024 >-> f32.max 0 >-> f32.min 1023
+    let expand : f32 -> u32 =
+      u32.f32 >-> (*) 0x00010001 >-> (&) 0xFF0000FF
+              >-> (*) 0x00000101 >-> (&) 0x0F00F00F
+              >-> (*) 0x00000011 >-> (&) 0xC30C30C3
+              >-> (*) 0x00000005 >-> (&) 0x49249249
+    let x' = (clamp10bit >-> expand) x
+    let y' = (clamp10bit >-> expand) y
+    let z' = (clamp10bit >-> expand) z
+    in x' * 4 + y' * 2 + z'
+
+let normalize (max : v3) (min : v3) (v : v3) =
+  vspace.map2 (/) ((vspace.-) v min) ((vspace.-) max min)
+
+-- let normalize {x,y,z} = {x=(x-x_min)/(x_max-x_min),
+--                            y=(y-y_min)/(y_max-y_min),
+--                            z=(z-z_min)/(z_max-z_min)}
 
 local let div_rounding_up x y : i32 = (x + y - 1) / y
 
 type ptr = #leaf i32 | #inner i32
 
-type inner = {left:ptr, right:ptr, parent: i32}
+type inner = {left:ptr, right:ptr, parent: i32, delta: u8}
 
 -- Creating Radix tree taken from
 -- https://github.com/athas/raytracingthenextweekinfuthark/blob/master/radixtree.fut
@@ -78,12 +102,31 @@ let mk_radix_tree [n] (L: [n]u32) : []inner =
       then (#leaf (gamma+1), -1)
       else (#inner (gamma+1), gamma+1)
 
-    in ({left, right}, (set_left_parent, i), (set_right_parent, i))
+    in ({left, right}, (set_left_parent, i), (set_right_parent, i), u8.i32 delta_node)
 
-  let (inners, parents_a, parents_b) = tabulate (n-1) node |> unzip3
+  let (inners, parents_a, parents_b, delta_nodes) = tabulate (n-1) node |> unzip4
   let k = (n-1)*2
   let parents = scatter (replicate (n-1) (-1))
                         (map (.1) parents_a ++ map (.1) parents_b : [k]i32)
                         (map (.2) parents_a ++ map (.2) parents_b : [k]i32)
 
-  in map2 (\{left, right} parent -> {left, right, parent}) inners parents
+  in map3 (\{left, right} parent delta_node -> {left, right, parent, delta=delta_node}) inners parents delta_nodes
+
+--let liste = [[0.1,0.1,0.1],[0.2,0.2,0.2],[0.3,0.3,0.3],[0.4,0.4,0.4],[0.5,0.5,0.5]]
+let main =
+  let liste = [[1.0,1.0,1.0],[2.0,2.0,2.0],[3.0,3.0,3.0],[4.0,4.0,4.0],[5.0,5.0,5.0]]
+  let mortonList = map (\lst -> let norm = normalize {x=1.0,y=1.0,z=1.0} {x=5.0,y=5.0,z=5.0} {x=lst[0],y=lst[1],z=lst[2]}
+				in morton30bit norm) liste
+  let _ = map (\i -> trace(i)) mortonList
+  let x = trace(mk_radix_tree mortonList)
+  in x
+
+
+ --  Trace at radixtree.fut:92:11-92: [{left = #inner 2i32, parent = -1i32, right = #inner 3i32}, {left = #leaf 1i32,
+ --                                                             parent = 2i32,
+ --                                                             right = #leaf
+ --                                                             2i32},
+ -- {left = #leaf 0i32, parent = 0i32, right = #inner 1i32}, {left = #inner 4i32,
+ --                                                           parent = 0i32,
+ --                                                           right = #leaf 5i32},
+ -- {left = #leaf 3i32, parent = 3i32, right = #leaf 4i32}]
