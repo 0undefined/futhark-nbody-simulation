@@ -36,25 +36,27 @@ let render [n] (os: [n]pointmass) (height: i32) (width: i32) : [height][width]i3
 
   in unflatten height width (scatter (replicate (height * width) backdrop) is cs)
 
-type text_content = (i32)
+type text_content = (i32, i32)
 
 module lys: lys with text_content = text_content = {
   type state = {
     objects: []pointmass,
     height: i32,
-    width: i32
+    width: i32,
+    paused: bool
   }
 
   let init (seed: i32) (height: i32) (width: i32) : state =
-    {objects = init seed 12, height, width}
+    {objects = init seed 12, height, width, paused = true}
 
   let resize (height: i32) (width: i32) (s: state) =
-    s with height = height
-      with width  = width
+    s with height  = height
+      with width   = width
       with objects = s.objects
 
   let keydown (k: i32) (s: state) =
-    s
+    if k == SDLK_SPACE then s with paused = !s.paused
+    else s
 
   let grab_mouse = false
   let mouse _ _ _ s = s
@@ -62,7 +64,7 @@ module lys: lys with text_content = text_content = {
 
   let event (e: event) (s: state) =
     match e
-    case #step dt -> s with objects = step s.objects dt
+    case #step dt -> s with objects = if s.paused then s.objects else step s.objects dt
     case #keydown {key} -> keydown key s
     case _ -> s
 
@@ -73,7 +75,7 @@ module lys: lys with text_content = text_content = {
     in unflatten s.height s.width (scatter (replicate (s.height * s.width) backdrop) is cs)
 
   type text_content = text_content
-  let text_format   = "FPS: %d"
+  let text_format   = "FPS: %d%[\nPaused|]"
   let text_colour _ = argb.white
-  let text_content fps (s: state) = (t32 fps)
+  let text_content fps (s: state) = (t32 fps, if s.paused then 0 else 1)
 }
