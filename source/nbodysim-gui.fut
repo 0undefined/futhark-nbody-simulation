@@ -16,9 +16,9 @@ let drawpoint (x: f32) (y: f32) (z: f32) (w: f32) (height: i32) (width: i32) : (
   else
     let pos = {x, y}
     -- normalize, [0;1]
-    let pos_norm = (v2.-) pos {x=vx_bound_lower, y=vy_bound_lower}
-    let pos_norm = (v2./) pos {x=vx_bound_upper - vx_bound_lower,
-                               y=vy_bound_upper - vy_bound_lower}
+    let pos_norm = (v2.-) pos      {x=vx_bound_lower, y=vy_bound_lower}
+    let pos_norm = (v2./) pos_norm {x=vx_bound_upper - vx_bound_lower,
+                                    y=vy_bound_upper - vy_bound_lower}
     -- project back to height/width
     let pos' = (v2.*) pos_norm {x=f32.i32 width, y=f32.i32 height}
     -- colour is determined by mass + z-position
