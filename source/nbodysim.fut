@@ -45,7 +45,7 @@ let init (seed: i32) (n: i32) : [n]pointmass =
         mass = rand.rand (0.01, mass_bound) r |> (.2)}
   ) rng
 
-let step [n] (o: [n]pointmass) : [n]pointmass =
+let step [n] (o: [n]pointmass) (dt: f32) : [n]pointmass =
   -- Gen sparse octree
   --   Foreach node, [8]children*, parent, center of mass, mass
   --   Morton code, https://en.wikipedia.org/wiki/Z-order_curve

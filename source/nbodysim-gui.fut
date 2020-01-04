@@ -60,12 +60,9 @@ module lys: lys with text_content = text_content = {
   let mouse _ _ _ s = s
   let wheel _ s = s
 
-  let step (s: state) =
-    s with objects = step s.objects
-
   let event (e: event) (s: state) =
     match e
-    case #step _ -> step s
+    case #step dt -> s with objects = step s.objects dt
     case #keydown {key} -> keydown key s
     case _ -> s
 
