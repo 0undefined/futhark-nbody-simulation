@@ -26,7 +26,7 @@ let drawpoint (x: f32) (y: f32) (z: f32) (w: f32) (height: i32) (width: i32) : (
     -- bright: one close boy
     let colour_weight = 0.5 + 0.5 * (w / mass_bound)
     let colour_z      = 0.5 + 0.5 * f32.sqrt (z**2 / (vy_bound_upper**2 + vy_bound_lower**2))
-    let colour        = argb.mix colour_weight argb.red colour_z argb.white
+    let colour        = argb.mix colour_weight argb.red (1 - colour_weight) argb.white -- argb.mix colour_weight argb.red colour_z argb.white
 
     in ((i32.f32 pos'.y) * width + (i32.f32 pos'.x), colour)
 
@@ -36,7 +36,7 @@ let render [n] (os: [n]pointmass) (height: i32) (width: i32) : [height][width]i3
 
   in unflatten height width (scatter (replicate (height * width) backdrop) is cs)
 
-type text_content = (i32, f32, i32)
+type text_content = (i32, f32,f32,f32,f32, f32,f32,f32,f32, i32)
 
 module lys: lys with text_content = text_content = {
   type state = {
@@ -48,7 +48,7 @@ module lys: lys with text_content = text_content = {
   }
 
   let init (seed: i32) (height: i32) (width: i32) : state =
-    {objects = init seed 1200, speed = 1024f32, height, width, paused = true}
+    {objects = init_solar seed 6, speed = 1024f32, height, width, paused = true}
 
   let resize (height: i32) (width: i32) (s: state) =
     s with height  = height
@@ -57,7 +57,7 @@ module lys: lys with text_content = text_content = {
 
   let keydown (k: i32) (s: state) =
     if      k == SDLK_SPACE then s with paused  = !s.paused
-    else if k == SDLK_n     then s with objects = step_naive 0.01 s.speed s.objects
+    else if k == SDLK_n     then s with objects = step_naive 1.0 s.speed s.objects
     else if k == SDLK_j     then s with speed = s.speed - 1
     else if k == SDLK_k     then s with speed = s.speed + 1
     else s
@@ -79,10 +79,11 @@ module lys: lys with text_content = text_content = {
     in unflatten s.height s.width (scatter (replicate (s.height * s.width) backdrop) is cs)
 
   type text_content = text_content
-  let text_format   = "FPS: %d\n%f%[\nPaused|]"
+  let text_format   = "FPS: %d\nv: %.2f x: %.2f y: %.2f z: %.2f\nv: %.2f x: %.2f y: %.2f z: %.2f\n%[\nPaused|]"
   let text_colour _ = argb.white
   let text_content fps (s: state) = (
     t32 fps,
-    s.speed,
+    v3.norm s.objects[0].vel, s.objects[0].vel.x, s.objects[0].vel.y, s.objects[0].vel.z,
+    v3.norm s.objects[1].vel, s.objects[1].vel.x, s.objects[1].vel.y, s.objects[1].vel.z,
     if s.paused then 0i32 else 1i32)
 }
