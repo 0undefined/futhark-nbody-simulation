@@ -1,6 +1,6 @@
 import "lib/github.com/diku-dk/lys/lys"
 import "lib/github.com/athas/vector/vspace"
-import "nbodysim"
+import "init"
 
 module v2 = mk_vspace_2d f32
 type v2 = vspace.vector
