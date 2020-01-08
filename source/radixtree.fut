@@ -113,20 +113,10 @@ let mk_radix_tree [n] (L: [n]u32) : []inner =
   in map3 (\{left, right} parent delta_node -> {left, right, parent, delta=delta_node}) inners parents delta_nodes
 
 --let liste = [[0.1,0.1,0.1],[0.2,0.2,0.2],[0.3,0.3,0.3],[0.4,0.4,0.4],[0.5,0.5,0.5]]
-let main =
-  let liste = [[1.0,1.0,1.0],[2.0,2.0,2.0],[3.0,3.0,3.0],[4.0,4.0,4.0],[5.0,5.0,5.0]]
-  let mortonList = map (\lst -> let norm = normalize {x=1.0,y=1.0,z=1.0} {x=5.0,y=5.0,z=5.0} {x=lst[0],y=lst[1],z=lst[2]}
-				in morton30bit norm) liste
-  let _ = map (\i -> trace(i)) mortonList
-  let x = trace(mk_radix_tree mortonList)
-  in x
-
-
- --  Trace at radixtree.fut:92:11-92: [{left = #inner 2i32, parent = -1i32, right = #inner 3i32}, {left = #leaf 1i32,
- --                                                             parent = 2i32,
- --                                                             right = #leaf
- --                                                             2i32},
- -- {left = #leaf 0i32, parent = 0i32, right = #inner 1i32}, {left = #inner 4i32,
- --                                                           parent = 0i32,
- --                                                           right = #leaf 5i32},
- -- {left = #leaf 3i32, parent = 3i32, right = #leaf 4i32}]
+-- let main =
+--   let liste = [[1.0,1.0,1.0],[2.0,2.0,2.0],[3.0,3.0,3.0],[4.0,4.0,4.0],[5.0,5.0,5.0]]
+--   let mortonList = map (\lst -> let norm = normalize {x=1.0,y=1.0,z=1.0} {x=5.0,y=5.0,z=5.0} {x=lst[0],y=lst[1],z=lst[2]}
+-- 				in morton30bit norm) liste
+--   let _ = map (\i -> trace(i)) mortonList
+--   let x = trace(mk_radix_tree mortonList)
+--   in x
