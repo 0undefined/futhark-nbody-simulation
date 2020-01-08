@@ -22,9 +22,13 @@ scaling/implementation wise.
 # Roadmap (country-roads edition)
 
 * [x] Get Lys working
-* [ ] Add naive implementation to Lys
+* [x] Add naive implementation to Lys
 * [ ] Create benchmarking stuff
-* [ ] Implement Octree
+* [ ] Optimal implementation (Barnes Hut)
+  + [x] Copy radix tree
+  + [x] Copy morton codes
+  + [ ] Implement Octree
+  + [ ] Apply simulation steps on said Octree
 
 
 ## Barnes hut sources
