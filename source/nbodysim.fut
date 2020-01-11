@@ -12,10 +12,10 @@ module rng_engine = minstd_rand
 module rand       = uniform_real_distribution f32 rng_engine
 
 -- min/max values [x|y]
-let vy_bound_lower : real = -400
-let vx_bound_lower : real = -400
-let vy_bound_upper : real =  400
-let vx_bound_upper : real =  400
+let vy_bound_lower : real = -600
+let vx_bound_lower : real = -600
+let vy_bound_upper : real =  600
+let vx_bound_upper : real =  600
 
 let mass_bound : real = 5000000
 
