@@ -11,15 +11,15 @@ let lowest  = { x=real.lowest,  y=real.lowest,  z=real.lowest }
 let mk_BH_tree [n]
     (sort_by_key: (pointmass -> u32) ->  []pointmass -> []pointmass)
     (pms: [n]pointmass) =
-  let centers    = map (.pos) pms
-  let min        = reduce_comm (v3.map2 real.min) highest centers
-  let max        = reduce_comm (v3.map2 real.max) lowest  centers
-  let normalize  = (v3.-min) >-> (v3./(max v3.-min))
-  let morton     = (.pos) >-> normalize >-> morton30bit
-  let pms = sort_by_key morton pms
+  let centers   = map (.pos) pms
+  let min       = reduce_comm (v3.map2 real.min) highest centers
+  let max       = reduce_comm (v3.map2 real.max) lowest  centers
+  let normalize = (v3.-min) >-> (v3./(max v3.-min))
+  let morton    = (.pos) >-> normalize >-> morton30bit
+  let pms       = sort_by_key morton pms
   let empty_inner {left, right, parent, delta} = {pos=v3.zero, mass=0, left, right, parent, delta}
-  let inners = map empty_inner (mk_radix_tree (map morton pms))
-  let depth = t32 (f32.log2 (r32 n)) + 2
+  let inners    = map empty_inner (mk_radix_tree (map morton pms))
+  let depth     = t32 (f32.log2 (r32 n)) + 2
   let get_pointmass inners ptr =
     match ptr
     case #leaf i -> unsafe (pms[i].pos, pms[i].mass)
@@ -29,7 +29,7 @@ let mk_BH_tree [n]
       v3.map (/m1+m2) ((v3.scale m1 p1) v3.+ (v3.scale m2 p2))
     let (pl, ml) = get_pointmass inners left
     let (pr, mr) = get_pointmass inners right
-    in {pos=avgpos pl ml pr mr, mass=ml+mr,
+    in {pos=avgpos pl ml pr mr, mass=ml + mr,
         left, right, parent, delta}
   let inners = loop inners for _i < depth do
                  map (update inners) inners
@@ -39,8 +39,8 @@ let BH_fold [n] 'a 'b (threshold: v3 -> bool) (op: b -> i32 -> pointmass -> b) (
   (.1) <|
   loop (acc, cur, prev) = (init, 0, #inner (-1))
   while cur != -1 do
-  let node = unsafe t.I[cur]
-  let from_left = prev == node.left
+  let node       = unsafe t.I[cur]
+  let from_left  = prev == node.left
   let from_right = prev == node.right
   let rec_child : #rec ptr | #norec =
     -- Did we return from left node?
@@ -51,12 +51,10 @@ let BH_fold [n] 'a 'b (threshold: v3 -> bool) (op: b -> i32 -> pointmass -> b) (
     then #rec node.left
     else #norec
   in match rec_child
-     case #norec ->
-       (acc, node.parent, #inner cur)
-     case #rec ptr ->
-    match ptr
-    case #inner i -> (acc, i, #inner cur)
-    case #leaf i -> (op acc i (unsafe t.L[i]), cur, ptr)
+    case #norec   -> (acc, node.parent, #inner cur)
+    case #rec ptr -> match ptr
+      case #inner i -> (acc, i, #inner cur)
+      case #leaf  i -> (op acc i (unsafe t.L[i]), cur, ptr)
 
 
 let force (a: pointmass) (b: pointmass) : v3 =

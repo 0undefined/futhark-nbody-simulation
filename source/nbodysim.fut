@@ -13,8 +13,7 @@ let force (a: pointmass) (b: pointmass) : v3 =
   let r'       = v3.scale inv_dist r
   in v3.scale (G' * a.mass * b.mass * inv_dist**2) r'
 
-let acceleration (a: pointmass) (f: v3) : v3 =
-  v3.scale (1/a.mass) f
+let acceleration (a: pointmass) (f: v3) : v3 = v3.scale (1/a.mass) f
 
 let step_naive [n] (dt: real) (_speed: real) (os: [n]pointmass) : [n]pointmass =
   let forces = map2 (\i o ->
