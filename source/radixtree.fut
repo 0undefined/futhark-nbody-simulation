@@ -1,4 +1,4 @@
-import "lib/github.com/athas/vector/vspace"
+import "types"
 -- Creating Morton codes, taken from
 -- https://github.com/athas/raytracingthenextweekinfuthark/blob/master/bvh.fut
 -- | Expands a 10-bit integer into 30 bits by inserting 2 zeros after
@@ -9,9 +9,6 @@ let expand_bits (v: u32) : u32 =
   let v = (v * 0x00000011) & 0xC30C30C3
   let v = (v * 0x00000005) & 0x49249249
   in v
-
-module vspace = mk_vspace_3d f32
-type v3 = vspace.vector
 
 -- let morton_3D {x,y,z} : u32 =
 --   let x = f32.min (f32.max(x * 1024) 0) 1023
@@ -36,7 +33,7 @@ let morton30bit {x, y, z} =
     in x' * 4 + y' * 2 + z'
 
 let normalize (max : v3) (min : v3) (v : v3) =
-  vspace.map2 (/) ((vspace.-) v min) ((vspace.-) max min)
+  v3.map2 (/) ((v3.-) v min) ((v3.-) max min)
 
 -- let normalize {x,y,z} = {x=(x-x_min)/(x_max-x_min),
 --                            y=(y-y_min)/(y_max-y_min),
