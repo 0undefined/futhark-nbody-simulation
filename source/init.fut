@@ -5,7 +5,7 @@ module rng_engine = minstd_rand
 module rand       = uniform_real_distribution f32 rng_engine
 
 
-let init (seed: i32) (n: i32) : [n]pointmass =
+let init_rand (seed: i32) (n: i32) : [n]pointmass =
   let rng = rng_engine.split_rng n <| rng_engine.rng_from_seed [seed]
   let bodies = map (\r ->
     -- retarded but it works
@@ -23,18 +23,31 @@ let init (seed: i32) (n: i32) : [n]pointmass =
     in {pos, vel,
         mass = rand.rand (mass_bound/1000, mass_bound/10) r |> (.2)}
   ) rng
-  -- TODO radix-sort by morton codes first
   in bodies
 
 
-let init_heavy_center (seed: i32) (n: i32) : []pointmass =
-  [{pos=v3.zero, vel=v3.zero, mass=mass_bound}] ++ init seed n
-
-
-let init_solar (_: i32) (n: i32) : [n]pointmass =
-  [{pos=v3.zero, vel=v3.zero, mass=mass_bound}, -- Center
-   {pos=vec (-290)     0  0, vel=vec    0  ( 122) 0, mass=mass_bound/25},  -- Big with orbit
+-- Arguments are solely for compatability, `_n` must be equal to 5
+let init_solar (_seed: i32) (_n: i32) : [5]pointmass =
+  [{pos=vec (-290)     0  0, vel=vec    0  ( 122) 0, mass=mass_bound/25},  -- Big with orbit
    {pos=vec (-267)     0  0, vel=vec    0  ( 219) 0, mass=mass_bound/300}, -- orbit
    {pos=vec (  75)     0  0, vel=vec    0  ( 259) 0, mass=mass_bound/250},
    {pos=vec ( 375) (-375) 0, vel=vec (-69) ( -69) 0, mass=mass_bound/40},
    {pos=vec (   0) (-180) 0, vel=vec (160) (   0) 0, mass=mass_bound/60}]
+
+
+let init_heavy_center
+    (seed: i32)
+    (n: i32)
+    (init_func: i32 -> i32 -> [n]pointmass) : []pointmass =
+  [{pos=v3.zero, vel=v3.zero, mass=mass_bound}] ++ init_func seed n
+
+
+let init_fast (seed: i32) (n: i32) (init_func: i32 -> i32 -> [n]pointmass) : [n]pointmass =
+  -- Create pointmasses
+  let bodies = init_func seed n
+  -- Create BHTree / Sort
+  let bh_tree = mk_BH_tree <insert sort> bodies
+  -- Calc points
+  let calculated_pointmasses = map (\b -> BH_fold (\_ -> true) cool_op b bh_tree) bh_tree
+  -- Return pointmasses
+  in calculated_pointmasses
