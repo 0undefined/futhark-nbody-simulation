@@ -1,11 +1,9 @@
 -- Types and constants
 import "lib/github.com/athas/vector/vspace"
-
-type real = f32
-
-module v3 = mk_vspace_3d f32
-
+module real = f32
+module v3 = mk_vspace_3d real
 type v3 = v3.vector
+type real = v3.real
 
 -- Constructor for v3
 let vec x y z = {x, y, z}
