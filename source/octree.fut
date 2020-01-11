@@ -1,8 +1,5 @@
 import "radixtree"
 
-type octNode = {isLeaf: bool, level: u8, parentIdx: u32, morton: u32,
-		childIdx: []u32}
-
 let mk_octree [n] (max: v3) (min: v3) (ps: [n]v3) =
   let mortons = map (normalize max min >-> morton30bit) ps
   let rtree = mk_radix_tree mortons

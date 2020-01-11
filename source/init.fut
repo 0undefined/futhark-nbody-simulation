@@ -4,6 +4,7 @@ import "types"
 module rng_engine = minstd_rand
 module rand       = uniform_real_distribution f32 rng_engine
 
+
 let init (seed: i32) (n: i32) : [n]pointmass =
   let rng = rng_engine.split_rng n <| rng_engine.rng_from_seed [seed]
   let bodies = map (\r ->
@@ -25,8 +26,10 @@ let init (seed: i32) (n: i32) : [n]pointmass =
   -- TODO radix-sort by morton codes first
   in bodies
 
+
 let init_heavy_center (seed: i32) (n: i32) : []pointmass =
   [{pos=v3.zero, vel=v3.zero, mass=mass_bound}] ++ init seed n
+
 
 let init_solar (_: i32) (n: i32) : [n]pointmass =
   [{pos=v3.zero, vel=v3.zero, mass=mass_bound}, -- Center

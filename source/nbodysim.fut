@@ -1,10 +1,12 @@
 import "radixtree"
 import "types"
 
+
 let advance_object_naive (dt: real) (o: pointmass) (a: v3) : pointmass =
   let vel = v3.(o.vel + scale dt a)
   let pos = v3.(o.pos + scale dt vel)
   in {pos, vel, mass=o.mass}
+
 
 let force (a: pointmass) (b: pointmass) : v3 =
   let G'       = 1f32 -- -6.674e-11
@@ -13,7 +15,9 @@ let force (a: pointmass) (b: pointmass) : v3 =
   let r'       = v3.scale inv_dist r
   in v3.scale (G' * a.mass * b.mass * inv_dist**2) r'
 
+
 let acceleration (a: pointmass) (f: v3) : v3 = v3.scale (1/a.mass) f
+
 
 let step_naive [n] (dt: real) (_speed: real) (os: [n]pointmass) : [n]pointmass =
   let forces = map2 (\i o ->
@@ -21,6 +25,7 @@ let step_naive [n] (dt: real) (_speed: real) (os: [n]pointmass) : [n]pointmass =
   ) (iota n) os
   let accelerations = map2 acceleration os forces
   in map2 (advance_object_naive dt) os accelerations
+
 
 let step [n] (dt: real) (_speed: real) (os: [n]pointmass) : [n]pointmass =
   -- Gen sparse octree
@@ -30,6 +35,7 @@ let step [n] (dt: real) (_speed: real) (os: [n]pointmass) : [n]pointmass =
   -- Travers/apply forces
   -- *sparse, so at max we will have 8 children per node
   os
+
 
 let main : real =
   0

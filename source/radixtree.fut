@@ -2,6 +2,12 @@ import "types"
 
 type inner = {left:ptr, right:ptr, parent: i32, delta: u8}
 
+local let div_rounding_up x y : i32 = (x + y - 1) / y
+
+let normalize (max: v3) (min: v3) (v: v3) =
+  v3.map2 (/) ((v3.-) v min) ((v3.-) max min)
+
+
 -- Creating Morton codes, taken from
 -- https://github.com/athas/raytracingthenextweekinfuthark/blob/master/bvh.fut
 -- | Expands a 10-bit integer into 30 bits by inserting 2 zeros after
@@ -13,14 +19,6 @@ let expand_bits (v: u32) : u32 =
   let v = (v * 0x00000005) & 0x49249249
   in v
 
--- let morton_3D {x,y,z} : u32 =
---   let x = f32.min (f32.max(x * 1024) 0) 1023
---   let y = f32.min (f32.max(y * 1024) 0) 1023
---   let z = f32.min (f32.max(z * 1024) 0) 1023
---   let xx = expand_bits (u32.f32 x)
---   let yy = expand_bits (u32.f32 y)
---   let zz = expand_bits (u32.f32 z)
---   in xx * 4 + yy * 2 + zz
 
 let morton30bit {x, y, z} =
     let clamp10bit : f32 -> f32 =
@@ -35,14 +33,6 @@ let morton30bit {x, y, z} =
     let z' = (clamp10bit >-> expand) z
     in x' * 4 + y' * 2 + z'
 
-let normalize (max: v3) (min: v3) (v: v3) =
-  v3.map2 (/) ((v3.-) v min) ((v3.-) max min)
-
--- let normalize {x,y,z} = {x=(x-x_min)/(x_max-x_min),
---                            y=(y-y_min)/(y_max-y_min),
---                            z=(z-z_min)/(z_max-z_min)}
-
-local let div_rounding_up x y : i32 = (x + y - 1) / y
 
 -- Creating Radix tree taken from
 -- https://github.com/athas/raytracingthenextweekinfuthark/blob/master/radixtree.fut

@@ -8,6 +8,7 @@ type bh [n] = { L: [n]pointmass, I: []inner }
 let highest = { x=real.highest, y=real.highest, z=real.highest }
 let lowest  = { x=real.lowest,  y=real.lowest,  z=real.lowest }
 
+
 let mk_BH_tree [n]
     (sort_by_key: (pointmass -> u32) ->  []pointmass -> []pointmass)
     (pms: [n]pointmass) =
@@ -34,6 +35,7 @@ let mk_BH_tree [n]
   let inners = loop inners for _i < depth do
                  map (update inners) inners
   in {L = pms, I = inners}
+
 
 let BH_fold [n] 'a 'b (threshold: v3 -> bool) (op: b -> i32 -> pointmass -> b) (init: b) (t: bh [n]) =
   (.1) <|
@@ -63,6 +65,7 @@ let force (a: pointmass) (b: pointmass) : v3 =
   let inv_dist = 1 / v3.norm r -- f32.max 1f32 (v3.norm r)
   let r'       = v3.scale inv_dist r
   in v3.scale (G' * a.mass * b.mass * inv_dist**2) r'
+
 
 let cool_op (self: pointmass) (accumulated_F: v3) (_i: i32) (other: pointmass) : v3 =
   (v3.+) accumulated_F (force self other)
