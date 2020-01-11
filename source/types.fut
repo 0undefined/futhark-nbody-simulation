@@ -14,6 +14,8 @@ type pointmass = {
   mass: real
 }
 
+type ptr = #leaf i32 | #inner i32
+
 -- min/max values [x|y]
 let vy_bound_lower : real = -600
 let vx_bound_lower : real = -600

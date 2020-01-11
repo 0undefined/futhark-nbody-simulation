@@ -2,15 +2,15 @@
 import "types"
 import "radixtree"
 
-let highest = {x=real.highest, y=real.highest, z=real.highest}
-let lowest  = {x=real.lowest, y=real.lowest, z=real.lowest}
+type inner  = { pos: v3, mass: v3, left: ptr, right: ptr, parent: i32 }
+type bh [n] = { L: [n]pointmass, I: []inner }
 
-type ptr = #leaf i32 | #inner i32
-type inner = {pos:v3, mass:v3, left:ptr, right:ptr, parent:i32}
-type bh [n]  = {L: [n]pointmass, I: []inner}
+let highest = { x=real.highest, y=real.highest, z=real.highest }
+let lowest  = { x=real.lowest,  y=real.lowest,  z=real.lowest }
 
-let mk_BH_tree [n] (sort_by_key: (pointmass -> u32) ->  []pointmass -> []pointmass)
-(pms : [n]pointmass) =
+let mk_BH_tree [n]
+    (sort_by_key: (pointmass -> u32) ->  []pointmass -> []pointmass)
+    (pms: [n]pointmass) =
   let centers    = map (.pos) pms
   let min        = reduce_comm (v3.map2 real.min) highest centers
   let max        = reduce_comm (v3.map2 real.max) lowest  centers
@@ -35,7 +35,7 @@ let mk_BH_tree [n] (sort_by_key: (pointmass -> u32) ->  []pointmass -> []pointma
                  map (update inners) inners
   in {L = pms, I = inners}
 
-let BH_fold [n] 'a 'b (threshold: v3 -> bool) (op: b -> i32 -> pointmass -> b) (init: b) (t : bh [n]) =
+let BH_fold [n] 'a 'b (threshold: v3 -> bool) (op: b -> i32 -> pointmass -> b) (init: b) (t: bh [n]) =
   (.1) <|
   loop (acc, cur, prev) = (init, 0, #inner (-1))
   while cur != -1 do
@@ -66,5 +66,5 @@ let force (a: pointmass) (b: pointmass) : v3 =
   let r'       = v3.scale inv_dist r
   in v3.scale (G' * a.mass * b.mass * inv_dist**2) r'
 
-let cool_op (self : pointmass) (accumulated_F : v3) (_i : i32) (other : pointmass) : v3 =
+let cool_op (self: pointmass) (accumulated_F: v3) (_i: i32) (other: pointmass) : v3 =
   (v3.+) accumulated_F (force self other)

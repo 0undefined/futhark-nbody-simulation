@@ -16,14 +16,14 @@ let force (a: pointmass) (b: pointmass) : v3 =
 let acceleration (a: pointmass) (f: v3) : v3 =
   v3.scale (1/a.mass) f
 
-let step_naive [n] (dt: real) (_: real) (os: [n]pointmass) : [n]pointmass =
+let step_naive [n] (dt: real) (_speed: real) (os: [n]pointmass) : [n]pointmass =
   let forces = map2 (\i o ->
     scatter (map (\p -> force o p) os) [i] [v3.zero] |> reduce_comm (v3.+) v3.zero
   ) (iota n) os
   let accelerations = map2 acceleration os forces
   in map2 (advance_object_naive dt) os accelerations
 
-let step [n] (dt: real) (_: real) (os: [n]pointmass) : [n]pointmass =
+let step [n] (dt: real) (_speed: real) (os: [n]pointmass) : [n]pointmass =
   -- Gen sparse octree
   --   Foreach node, [8]children*, parent, center of mass, mass
   --   Morton code, https://en.wikipedia.org/wiki/Z-order_curve

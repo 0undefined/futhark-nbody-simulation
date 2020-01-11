@@ -1,4 +1,7 @@
 import "types"
+
+type inner = {left:ptr, right:ptr, parent: i32, delta: u8}
+
 -- Creating Morton codes, taken from
 -- https://github.com/athas/raytracingthenextweekinfuthark/blob/master/bvh.fut
 -- | Expands a 10-bit integer into 30 bits by inserting 2 zeros after
@@ -32,7 +35,7 @@ let morton30bit {x, y, z} =
     let z' = (clamp10bit >-> expand) z
     in x' * 4 + y' * 2 + z'
 
-let normalize (max : v3) (min : v3) (v : v3) =
+let normalize (max: v3) (min: v3) (v: v3) =
   v3.map2 (/) ((v3.-) v min) ((v3.-) max min)
 
 -- let normalize {x,y,z} = {x=(x-x_min)/(x_max-x_min),
@@ -40,10 +43,6 @@ let normalize (max : v3) (min : v3) (v : v3) =
 --                            z=(z-z_min)/(z_max-z_min)}
 
 local let div_rounding_up x y : i32 = (x + y - 1) / y
-
-type ptr = #leaf i32 | #inner i32
-
-type inner = {left:ptr, right:ptr, parent: i32, delta: u8}
 
 -- Creating Radix tree taken from
 -- https://github.com/athas/raytracingthenextweekinfuthark/blob/master/radixtree.fut
@@ -107,7 +106,9 @@ let mk_radix_tree [n] (L: [n]u32) : []inner =
                         (map (.1) parents_a ++ map (.1) parents_b : [k]i32)
                         (map (.2) parents_a ++ map (.2) parents_b : [k]i32)
 
-  in map3 (\{left, right} parent delta_node -> {left, right, parent, delta=delta_node}) inners parents delta_nodes
+  in map3 (\{left, right} parent delta_node -> {
+    left, right, parent, delta=delta_node
+  }) inners parents delta_nodes
 
 --let liste = [[0.1,0.1,0.1],[0.2,0.2,0.2],[0.3,0.3,0.3],[0.4,0.4,0.4],[0.5,0.5,0.5]]
 -- let main =
