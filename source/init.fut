@@ -14,7 +14,6 @@ let init_solar (_: i32) (n: i32) : [n]pointmass =
    ]
 
 let init (seed: i32) (n: i32) : []pointmass =
-  let v = 9f32
   let rng = rng_engine.split_rng n <| rng_engine.rng_from_seed [seed]
   let bodies = map (\r ->
     -- retarded but it works
@@ -22,9 +21,9 @@ let init (seed: i32) (n: i32) : []pointmass =
     let (r, py) = rand.rand (vy_bound_lower/1.3, vy_bound_upper/1.3) r
     let (r, pz) = rand.rand (vy_bound_lower/1.3, vy_bound_upper/1.3) r
 
-    let (r, vx) = rand.rand (-v, v) r
-    let (r, vy) = rand.rand (-v, v) r
-    let (r, vz) = rand.rand (-v, v) r
+    let (r, vx) = rand.rand (-initial_vel, initial_vel) r
+    let (r, vy) = rand.rand (-initial_vel, initial_vel) r
+    let (r, vz) = rand.rand (-initial_vel, initial_vel) r
 
     let pos = vec px py pz
     let vel = vec vx vy vz

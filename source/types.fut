@@ -23,3 +23,5 @@ let vy_bound_upper : real =  600
 let vx_bound_upper : real =  600
 
 let mass_bound : real = 5000000
+
+let initial_vel = 9f32
