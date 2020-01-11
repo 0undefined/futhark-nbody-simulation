@@ -1,6 +1,10 @@
-import "nbodysim"
+import "lib/github.com/diku-dk/cpprandom/random"
+import "types"
 
-let init_solar (seed: i32) (n: i32) : [n]pointmass =
+module rng_engine = minstd_rand
+module rand       = uniform_real_distribution f32 rng_engine
+
+let init_solar (_: i32) (n: i32) : [n]pointmass =
   [{pos=v3.zero, vel=v3.zero, mass=mass_bound}, -- Center
    {pos=vec (-290)     0  0, vel=vec    0  ( 122) 0, mass=mass_bound/25},  -- Big with orbit
    {pos=vec (-267)     0  0, vel=vec    0  ( 219) 0, mass=mass_bound/300}, -- orbit

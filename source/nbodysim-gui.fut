@@ -1,9 +1,10 @@
 import "lib/github.com/diku-dk/lys/lys"
 import "lib/github.com/athas/vector/vspace"
-import "init"
+import "init"     -- Initialization functions
+import "nbodysim" -- Simulation functions
 
 module v2 = mk_vspace_2d f32
-type v2 = vspace.vector
+type v2 = v2.vector
 
 -- return flat index + colour of point
 let drawpoint (x: f32) (y: f32) (z: f32) (w: f32) (height: i32) (width: i32) : (i32, i32) =
@@ -24,9 +25,9 @@ let drawpoint (x: f32) (y: f32) (z: f32) (w: f32) (height: i32) (width: i32) : (
     -- colour is determined by mass + z-position
     -- red: one thicc boy
     -- bright: one close boy
-    let colour_weight = 0.5 + 0.5 * (w / mass_bound)
-    let colour_z      = 0.5 + 0.5 * f32.sqrt (z**2 / (vy_bound_upper**2 + vy_bound_lower**2))
-    let colour        = argb.mix colour_weight argb.red (1 - colour_weight) argb.white -- argb.mix colour_weight argb.red colour_z argb.white
+    let colour_weight = 0.2 + 0.8 * (w / mass_bound)
+    let colour_z      = 0.2 + 0.8 * f32.sqrt (z**2 / (vy_bound_upper**2 + vy_bound_lower**2))
+    let colour        = argb.mix colour_weight argb.red colour_z argb.white -- argb.mix colour_weight argb.red colour_z argb.white
 
     in ((i32.f32 pos'.y) * width + (i32.f32 pos'.x), colour)
 
