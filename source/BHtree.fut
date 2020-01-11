@@ -16,15 +16,17 @@ let mk_BH_tree [n]
   let min       = reduce_comm (v3.map2 real.min) highest centers
   let max       = reduce_comm (v3.map2 real.max) lowest  centers
   let normalize = (v3.-min) >-> (v3./(max v3.-min))
+
   let morton    = (.pos) >-> normalize >-> morton30bit
   let pms       = sort_by_key morton pms
+
   let empty_inner {left, right, parent, delta} = {pos=v3.zero, mass=0, left, right, parent, delta}
   let inners    = map empty_inner (mk_radix_tree (map morton pms))
-  let depth     = t32 (f32.log2 (r32 n)) + 2
   let get_pointmass inners ptr =
     match ptr
-    case #leaf i -> unsafe (pms[i].pos, pms[i].mass)
+    case #leaf  i -> unsafe (pms[i].pos,    pms[i].mass)
     case #inner i -> unsafe (inners[i].pos, inners[i].mass)
+
   let update inners {pos=_, mass=_, left, right, parent, delta} =
     let avgpos p1 m1 p2 m2 =
       v3.map (/m1+m2) ((v3.scale m1 p1) v3.+ (v3.scale m2 p2))
@@ -32,6 +34,8 @@ let mk_BH_tree [n]
     let (pr, mr) = get_pointmass inners right
     in {pos=avgpos pl ml pr mr, mass=ml + mr,
         left, right, parent, delta}
+
+  let depth     = t32 (f32.log2 (r32 n)) + 2
   let inners = loop inners for _i < depth do
                  map (update inners) inners
   in {L = pms, I = inners}
