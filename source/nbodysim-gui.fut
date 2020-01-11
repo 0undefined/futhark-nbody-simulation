@@ -52,7 +52,7 @@ module lys: lys with text_content = text_content = {
 
 
   let init (seed: i32) (height: i32) (width: i32) : state =
-    {objects = init_solar seed 6, speed = 1024f32, height, width, paused = true}
+    {objects = init_heavy_center seed 6 init_solar, speed = 1024f32, height, width, paused = true}
 
 
   let resize (height: i32) (width: i32) (s: state) =
