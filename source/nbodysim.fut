@@ -1,5 +1,7 @@
+import "lib/github.com/diku-dk/sorts/bubble_sort"
 import "radixtree"
 import "types"
+import "BHtree"
 
 
 let advance_object_naive (dt: real) (o: pointmass) (a: v3) : pointmass =
@@ -28,13 +30,18 @@ let step_naive [n] (dt: real) (_speed: real) (os: [n]pointmass) : [n]pointmass =
 
 
 let step [n] (dt: real) (_speed: real) (os: [n]pointmass) : [n]pointmass =
-  -- Gen sparse octree
-  --   Foreach node, [8]children*, parent, center of mass, mass
-  --   Morton code, https://en.wikipedia.org/wiki/Z-order_curve
-  --   if n > 1 then recurse (ie. gen more buckets)
-  -- Travers/apply forces
-  -- *sparse, so at max we will have 8 children per node
-  os
+  -- We can assume that the bodies are almost sorted, therefore use a sorting
+  -- algorithm with best case on a (nearly|pre) sorted array
+  let sort    = (\kf ks -> bubble_sort_by_key kf (<=) ks)
+  let (bh_tree, min, max) = mk_BH_tree sort os
+  -- Traverse/apply forces
+  let forces : [n]v3 = map2 (\leaf idx ->
+    let threshold = cool_threshold leaf.pos 2
+    let op        = cool_op idx leaf
+    in BH_fold threshold op v3.zero bh_tree
+  ) bh_tree.L (iota n)
+  let accelerations = map2 acceleration bh_tree.L forces
+  in map2 (advance_object_naive dt) bh_tree.L accelerations
 
 
 let main : real =

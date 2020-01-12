@@ -52,7 +52,7 @@ module lys: lys with text_content = text_content = {
 
 
   let init (seed: i32) (height: i32) (width: i32) : state =
-    {objects = init_heavy_center seed 6 init_solar, speed = 1024f32, height, width, paused = true}
+    {objects = init_fast 0 6 (\a b -> init_heavy_center a b init_solar), speed = 1024f32, height, width, paused = true}
 
 
   let resize (height: i32) (width: i32) (s: state) =
@@ -63,7 +63,7 @@ module lys: lys with text_content = text_content = {
 
   let keydown (k: i32) (s: state) =
     if      k == SDLK_SPACE then s with paused  = !s.paused
-    else if k == SDLK_n     then s with objects = step_naive 1.0 s.speed s.objects
+    else if k == SDLK_n     then s with objects = step 1.0 s.speed s.objects
     else if k == SDLK_j     then s with speed = s.speed - 1
     else if k == SDLK_k     then s with speed = s.speed + 1
     else s
@@ -76,7 +76,7 @@ module lys: lys with text_content = text_content = {
 
   let event (e: event) (s: state) =
     match e
-    case #step dt -> s with objects = if s.paused then s.objects else step_naive dt s.speed s.objects
+    case #step dt -> s with objects = if s.paused then s.objects else step dt s.speed s.objects
     case #keydown {key} -> keydown key s
     case _ -> s
 

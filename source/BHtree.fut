@@ -38,33 +38,32 @@ let mk_BH_tree [n]
   in ({L = pms, I = inners}, min, max)
 
 
-let BH_fold [n] 'a 'b
+let BH_fold [n] 'b
     (threshold: u8 -> v3 -> bool)
     (op: b -> i32 -> pointmass -> b)
-    (init: b)
-    (t: bh [n]) =
+    (initial: b)
+    (t: bh [n]) : b =
   (.1) <|
-  loop (acc, cur, prev) = (init, 0, #inner (-1))
-  while cur != -1 do
-  let node       = unsafe t.I[cur]
-  let from_left  = prev == node.left
-  let from_right = prev == node.right
-  let rec_child : #rec ptr | #norec =
-    -- Did we return from left node?
-    if from_left
-    then #rec node.right
-    -- First encounter and in this BB?
-    else if !from_right && threshold node.delta node.pos
-    then #rec node.left
-    else #norec
-  in match rec_child
-    case #norec ->
-      let inner = unsafe t.I[cur]
-      let pointmass = {pos=inner.pos, mass=inner.mass, vel=v3.zero}
-      in (op acc cur pointmass, node.parent, #inner cur)
-    case #rec ptr -> match ptr
-      case #inner i -> (acc, i, #inner cur)
-      case #leaf i  -> (op acc i (unsafe t.L[i]), cur, ptr)
+    loop (acc, cur, prev) = (initial, 0, #inner (-1)) while cur != -1 do
+      let node       = unsafe t.I[cur]
+      let from_left  = prev == node.left
+      let from_right = prev == node.right
+      let rec_child : #rec ptr | #norec =
+        -- Did we return from left node?
+        if from_left
+        then #rec node.right
+        -- First encounter and in this BB?
+        else if !from_right && threshold node.delta node.pos
+        then #rec node.left
+        else #norec
+      in match rec_child
+        case #norec ->
+          let inner = unsafe t.I[cur]
+          let pointmass = {pos=inner.pos, mass=inner.mass, vel=v3.zero}
+          in (op acc cur pointmass, node.parent, #inner cur)
+        case #rec ptr -> match ptr
+          case #inner i -> (acc, i, #inner cur)
+          case #leaf i  -> (op acc i (unsafe t.L[i]), cur, ptr)
 
 
 let force (a: pointmass) (b: pointmass) : v3 =

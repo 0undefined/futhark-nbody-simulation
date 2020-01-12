@@ -1,5 +1,7 @@
 import "lib/github.com/diku-dk/cpprandom/random"
+import "lib/github.com/diku-dk/sorts/radix_sort"
 import "types"
+import "BHtree"
 
 module rng_engine = minstd_rand
 module rand       = uniform_real_distribution f32 rng_engine
@@ -46,8 +48,6 @@ let init_fast (seed: i32) (n: i32) (init_func: i32 -> i32 -> [n]pointmass) : [n]
   -- Create pointmasses
   let bodies = init_func seed n
   -- Create BHTree / Sort
-  let bh_tree = mk_BH_tree <insert sort> bodies
-  -- Calc points
-  let calculated_pointmasses = map (\b -> BH_fold (\_ -> true) cool_op b bh_tree) bh_tree
-  -- Return pointmasses
-  in calculated_pointmasses
+  let sort = (\kf ks -> radix_sort_by_key kf 31 (u32.get_bit) ks)
+  let ({L, I}, _, _) = mk_BH_tree sort bodies
+  in L
