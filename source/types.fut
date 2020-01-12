@@ -24,5 +24,5 @@ let initial_vel = 9f32
 
 type radix_inner = {left:ptr, right:ptr, parent: i32, delta: u8}
 
-type bh_inner  = {pos: v3, mass: v3, left: ptr, right: ptr, parent: i32}
+type bh_inner  = {pos: v3, mass: real, left: ptr, right: ptr, parent: i32, delta: u8}
 type bh [n] = {L: [n]pointmass, I: []bh_inner}

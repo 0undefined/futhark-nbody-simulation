@@ -5,12 +5,6 @@ import "radixtree"
 let highest = {x=real.highest, y=real.highest, z=real.highest}
 let lowest  = {x=real.lowest,  y=real.lowest,  z=real.lowest}
 
-<<<<<<< HEAD
-type ptr = #leaf i32 | #inner i32
-type inner = {pos:v3, mass:v3, left:ptr, right:ptr, parent:i32, delte: u8}
-type bh [n]  = {L: [n]pointmass, I: []inner}
-=======
->>>>>>> 92e15a23b36998e271866426cf119901a5d4ecae
 
 let mk_BH_tree [n]
     (sort_by_key: (pointmass -> u32) ->  []pointmass -> []pointmass)
@@ -43,7 +37,12 @@ let mk_BH_tree [n]
                  map (update inners) inners
   in ({L = pms, I = inners}, min, max)
 
-let BH_fold [n] 'a 'b (threshold: u8 -> v3 -> bool) (op: b -> i32 -> pointmass -> b) (init: b) (t : bh [n]) =
+
+let BH_fold [n] 'a 'b
+    (threshold: u8 -> v3 -> bool)
+    (op: b -> i32 -> pointmass -> b)
+    (init: b)
+    (t: bh [n]) =
   (.1) <|
   loop (acc, cur, prev) = (init, 0, #inner (-1))
   while cur != -1 do
@@ -59,14 +58,13 @@ let BH_fold [n] 'a 'b (threshold: u8 -> v3 -> bool) (op: b -> i32 -> pointmass -
     then #rec node.left
     else #norec
   in match rec_child
-     case #norec ->
-       let inner = unsafe t.I[cur]
-       let pointmass = {pos=inner.pos, mass=inner.mass, vel=v3.zero}
-       in (op acc cur pointmass, node.parent, #inner cur)
-     case #rec ptr ->
-    match ptr
-    case #inner i -> (acc, i, #inner cur)
-    case #leaf i  -> (op acc i (unsafe t.L[i]), cur, ptr)
+    case #norec ->
+      let inner = unsafe t.I[cur]
+      let pointmass = {pos=inner.pos, mass=inner.mass, vel=v3.zero}
+      in (op acc cur pointmass, node.parent, #inner cur)
+    case #rec ptr -> match ptr
+      case #inner i -> (acc, i, #inner cur)
+      case #leaf i  -> (op acc i (unsafe t.L[i]), cur, ptr)
 
 
 let force (a: pointmass) (b: pointmass) : v3 =
@@ -76,8 +74,10 @@ let force (a: pointmass) (b: pointmass) : v3 =
   let r'       = v3.scale inv_dist r
   in v3.scale (G' * a.mass * b.mass * inv_dist**2) r'
 
+
 let cool_op (self_idx : i32) (self : pointmass) (accumulated_F : v3) (i : i32) (other : pointmass) : v3 =
   if self_idx == i then accumulated_F else (v3.+) accumulated_F (force self other)
+
 
 let cool_threshold (self_pos : v3) (theta : real) (delta : u8) (other_pos : v3) : bool =
   (f32.u8 delta) / v3.(norm (self_pos - other_pos)) < theta
