@@ -8,16 +8,9 @@ type real = v3.real
 -- Constructor for v3
 let vec x y z = {x, y, z}
 
-type pointmass = {
-  pos: v3,
-  vel: v3,
-  mass: real
-}
+type pointmass = {pos: v3, vel: v3, mass: real}
 
 type ptr = #leaf i32 | #inner i32
-
-type octNode = {isLeaf: bool, level: u8, parentIdx: u32, morton: u32,
-		childIdx: []u32}
 
 -- min/max values [x|y]
 let vy_bound_lower : real = -600
