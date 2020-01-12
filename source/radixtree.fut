@@ -1,7 +1,5 @@
 import "types"
 
-type inner = {left:ptr, right:ptr, parent: i32, delta: u8}
-
 local let div_rounding_up x y : i32 = (x + y - 1) / y
 
 let normalize (max: v3) (min: v3) (v: v3) =
@@ -37,7 +35,7 @@ let morton30bit {x, y, z} =
 -- Creating Radix tree taken from
 -- https://github.com/athas/raytracingthenextweekinfuthark/blob/master/radixtree.fut
 -- | `L` must be sorted.
-let mk_radix_tree [n] (L: [n]u32) : []inner =
+let mk_radix_tree [n] (L: [n]u32) : []radix_inner =
 
   let delta (i, j) = if j >= 0 && j < n
                      then let Li = unsafe L[i]
@@ -99,12 +97,3 @@ let mk_radix_tree [n] (L: [n]u32) : []inner =
   in map3 (\{left, right} parent delta_node -> {
     left, right, parent, delta=delta_node
   }) inners parents delta_nodes
-
---let liste = [[0.1,0.1,0.1],[0.2,0.2,0.2],[0.3,0.3,0.3],[0.4,0.4,0.4],[0.5,0.5,0.5]]
--- let main =
---   let liste = [[1.0,1.0,1.0],[2.0,2.0,2.0],[3.0,3.0,3.0],[4.0,4.0,4.0],[5.0,5.0,5.0]]
---   let mortonList = map (\lst -> let norm = normalize {x=1.0,y=1.0,z=1.0} {x=5.0,y=5.0,z=5.0} {x=lst[0],y=lst[1],z=lst[2]}
--- 				in morton30bit norm) liste
---   let _ = map (\i -> trace(i)) mortonList
---   let x = trace(mk_radix_tree mortonList)
---   in x

@@ -28,3 +28,8 @@ let vx_bound_upper : real =  600
 let mass_bound : real = 5000000
 
 let initial_vel = 9f32
+
+type radix_inner = {left:ptr, right:ptr, parent: i32, delta: u8}
+
+type bh_inner  = {pos: v3, mass: v3, left: ptr, right: ptr, parent: i32}
+type bh [n] = {L: [n]pointmass, I: []bh_inner}

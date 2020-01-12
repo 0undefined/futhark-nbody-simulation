@@ -2,9 +2,6 @@
 import "types"
 import "radixtree"
 
-type inner  = {pos: v3, mass: v3, left: ptr, right: ptr, parent: i32}
-type bh [n] = {L: [n]pointmass, I: []inner}
-
 let highest = {x=real.highest, y=real.highest, z=real.highest}
 let lowest  = {x=real.lowest,  y=real.lowest,  z=real.lowest}
 
