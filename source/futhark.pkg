@@ -2,4 +2,5 @@ require {
   github.com/athas/vector 0.4.4 #3aebc74bafe62ab11347134d48305a3f90465c3f
   github.com/diku-dk/lys 0.1.0 #02398c179843df665b9bb6f733cb5141c8e59099
   github.com/diku-dk/cpprandom 1.1.7 #644ed3da98dccfe55dcfa48208923307b2d81f60
+  github.com/diku-dk/sorts 0.3.8 #a221d05c6e19f8245075b6acff96c273424fdc73
 }
