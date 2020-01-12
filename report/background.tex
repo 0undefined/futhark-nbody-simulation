@@ -13,7 +13,18 @@ implement a clustered version instead. The idea is that by defining clusters of
 bodies we can approximate a region of points, as a single point. The clustered
 version is tree-based meaning that we store the points in a tree, and based on
 some threshold $\theta$ we determine when we should calculate the interaction
-for actual points, and when to calculate it for the clustered representation.
+for actual points, and when to calculate it for th clustered representation.
 \subsection{Barnes-Hut simulation}
 To perform this clustered \textit{n}-body simulation, we make use of the
-Barnes-Hut algorithm \cite[BH-algo].
+Barnes-Hut algorithm \cite{BH-algo}. In Barnes-Hut an octree for 3D, or a
+quadtree for 2D, is typically used. This is typically done since the space
+containing these bodies can be subdivided into these types of trees. An exmaple
+of this can be seen in figure \ref{fig:subdivision}.
+\begin{Figure}
+  \centering
+  \includegraphics[width=0.30\textwidth]{assests/example-space}
+  \includegraphics[width=0.65\textwidth]{assests/example-tree}
+  \captionof{figure}{A sample space subdivided into regions, with each region
+    containing 1 body. The quadtree created from this 2D space can also be seen.}
+  \label{fig:subdivision}
+\end{Figure}
