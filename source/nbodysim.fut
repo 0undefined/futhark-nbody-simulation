@@ -1,6 +1,6 @@
 -- ==
 -- entry: main
--- input { 80i32 10i32 } output { 0 }
+-- input { 5000i32 10i32 } auto output
 import "lib/github.com/diku-dk/sorts/bubble_sort"
 import "radixtree"
 import "types"
@@ -41,7 +41,7 @@ let step [n] (dt: real) (os: [n]pointmass) : [n]pointmass =
 
   -- Traverse/apply forces
   let forces : [n]v3 = map2 (\leaf idx ->
-    let threshold = cool_threshold leaf.pos 3
+    let threshold = cool_threshold leaf.pos 6
     let op        = cool_op idx leaf
     in BH_fold threshold op v3.zero bh_tree
   ) bh_tree.L (iota n)
@@ -50,8 +50,8 @@ let step [n] (dt: real) (os: [n]pointmass) : [n]pointmass =
   in map2 (advance_object_naive dt) bh_tree.L accelerations
 
 
-let main (n: i32) (steps: i32) : i32 =
+let main (n: i32) (steps: i32) : real =
   let bodies = init_fast 0 n init_rand
-  let res = loop (bodies, i) = (bodies, 0) while i < steps do
+  let (res, _) = loop (bodies, i) = (bodies, 0) while i < steps do
     (step 0.1 bodies, i + 1)
-  in length res.1
+  in map (\r -> r.mass) res |> reduce (+) 0
