@@ -26,9 +26,9 @@ let acceleration (a: pointmass) (f: v3) : v3 = v3.scale (1/a.mass) f
 
 
 let step_naive [n] (dt: real) (speed: f32) (os: [n]pointmass) : [n]pointmass =
-  let forces = map2 (\i o ->
+  let forces = trace(map2 (\i o ->
     scatter (map (\p -> force o p) os) [i] [v3.zero] |> reduce_comm (v3.+) v3.zero
-  ) (iota n) os
+  ) (iota n) os)
   let accelerations = map2 acceleration os forces
   in map2 (advance_object_naive dt) os accelerations
 
@@ -40,18 +40,17 @@ let step [n] (dt: real) (speed: f32) (os: [n]pointmass) : [n]pointmass =
   let (bh_tree, min, max) = mk_BH_tree sort os
 
   -- Traverse/apply forces
-  let forces : [n]v3 = map2 (\leaf idx ->
+  let forces = trace(map2 (\leaf idx ->
     let threshold = cool_threshold leaf.pos ((vx_bound_upper - vx_bound_lower) / 6)
     let op        = cool_op idx leaf
     in BH_fold threshold op v3.zero bh_tree
-  ) bh_tree.L (iota n)
-
+  ) bh_tree.L (iota n))
   let accelerations = map2 acceleration bh_tree.L forces
-  in map2 (advance_object_naive (speed*dt)) bh_tree.L accelerations
+  in map2 (advance_object_naive dt) bh_tree.L accelerations
 
 
 let main (n: i32) (steps: i32) : real =
-  let bodies = init_fast 0 n init_rand
+  let bodies = trace(init_fast 0 n init_rand)
   let (res, _) = loop (bodies, i) = (bodies, 0) while i < steps do
-    (step 0.1 1.0 bodies, i + 1)
+    (step_naive 0.1 1.0 bodies, i + 1)
   in map (\r -> r.mass) res |> reduce (+) 0

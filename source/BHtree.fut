@@ -1,4 +1,3 @@
-
 -- A Barns-Hut implementation
 import "types"
 import "radixtree"
@@ -57,14 +56,14 @@ let BH_fold [n] 'b
         else if !from_right && threshold node.delta node.pos
         then #rec node.left
         else #norec
-      in match rec_child
+      in trace <| match rec_child
         case #norec ->
-          let inner = unsafe t.I[cur]
-          let pointmass = {pos=inner.pos, mass=inner.mass, vel=v3.zero}
-          in (op acc (-1) pointmass, node.parent, #inner cur)
+          let pointmass = {pos=node.pos, mass=node.mass, vel=v3.zero}
+          in (if threshold node.delta node.pos then acc
+	      else op acc (-1) pointmass, node.parent, #inner cur)
         case #rec ptr -> match ptr
           case #inner i -> (acc, i, #inner cur)
-          case #leaf i  -> (op acc i (unsafe t.L[i]), cur, ptr)
+          case #leaf  i -> (op acc i (unsafe t.L[i]), cur, ptr)
 
 
 let force (a: pointmass) (b: pointmass) : v3 =
@@ -80,4 +79,5 @@ let cool_op (self_idx : i32) (self : pointmass) (accumulated_F : v3) (i : i32) (
 
 
 let cool_threshold (self_pos : v3) (theta : real) (delta : u8) (other_pos : v3) : bool =
-  (f32.u8 delta) / v3.(norm (self_pos - other_pos)) < theta
+  true
+--(f32.u8 delta) / v3.(norm (self_pos - other_pos)) < theta
