@@ -1,7 +1,11 @@
+-- ==
+-- entry: main
+-- input { 80i32 10i32 } output { 0 }
 import "lib/github.com/diku-dk/sorts/bubble_sort"
 import "radixtree"
 import "types"
 import "BHtree"
+import "init"
 
 
 let advance_object_naive (dt: real) (o: pointmass) (a: v3) : pointmass =
@@ -21,7 +25,7 @@ let force (a: pointmass) (b: pointmass) : v3 =
 let acceleration (a: pointmass) (f: v3) : v3 = v3.scale (1/a.mass) f
 
 
-let step_naive [n] (dt: real) (_speed: real) (os: [n]pointmass) : [n]pointmass =
+let step_naive [n] (dt: real) (os: [n]pointmass) : [n]pointmass =
   let forces = map2 (\i o ->
     scatter (map (\p -> force o p) os) [i] [v3.zero] |> reduce_comm (v3.+) v3.zero
   ) (iota n) os
@@ -29,20 +33,25 @@ let step_naive [n] (dt: real) (_speed: real) (os: [n]pointmass) : [n]pointmass =
   in map2 (advance_object_naive dt) os accelerations
 
 
-let step [n] (dt: real) (_speed: real) (os: [n]pointmass) : [n]pointmass =
+let step [n] (dt: real) (os: [n]pointmass) : [n]pointmass =
   -- We can assume that the bodies are almost sorted, therefore use a sorting
   -- algorithm with best case on a (nearly|pre) sorted array
   let sort    = (\kf ks -> bubble_sort_by_key kf (<=) ks)
   let (bh_tree, min, max) = mk_BH_tree sort os
+
   -- Traverse/apply forces
   let forces : [n]v3 = map2 (\leaf idx ->
-    let threshold = cool_threshold leaf.pos 2
+    let threshold = cool_threshold leaf.pos 3
     let op        = cool_op idx leaf
     in BH_fold threshold op v3.zero bh_tree
   ) bh_tree.L (iota n)
+
   let accelerations = map2 acceleration bh_tree.L forces
   in map2 (advance_object_naive dt) bh_tree.L accelerations
 
 
-let main : real =
-  0
+let main (n: i32) (steps: i32) : i32 =
+  let bodies = init_fast 0 n init_rand
+  let res = loop (bodies, i) = (bodies, 0) while i < steps do
+    (step 0.1 bodies, i + 1)
+  in length res.1
