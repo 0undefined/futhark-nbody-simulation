@@ -41,7 +41,7 @@ let step [n] (dt: real) (speed: f32) (os: [n]pointmass) : [n]pointmass =
 
   -- Traverse/apply forces
   let forces : [n]v3 = map2 (\leaf idx ->
-    let threshold = cool_threshold leaf.pos 6
+    let threshold = cool_threshold leaf.pos ((vx_bound_upper - vx_bound_lower) / 6)
     let op        = cool_op idx leaf
     in BH_fold threshold op v3.zero bh_tree
   ) bh_tree.L (iota n)
