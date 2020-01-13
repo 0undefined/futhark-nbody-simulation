@@ -25,7 +25,7 @@ let force (a: pointmass) (b: pointmass) : v3 =
 let acceleration (a: pointmass) (f: v3) : v3 = v3.scale (1/a.mass) f
 
 
-let step_naive [n] (dt: real) (os: [n]pointmass) : [n]pointmass =
+let step_naive [n] (dt: real) (speed: f32) (os: [n]pointmass) : [n]pointmass =
   let forces = map2 (\i o ->
     scatter (map (\p -> force o p) os) [i] [v3.zero] |> reduce_comm (v3.+) v3.zero
   ) (iota n) os
@@ -33,10 +33,10 @@ let step_naive [n] (dt: real) (os: [n]pointmass) : [n]pointmass =
   in map2 (advance_object_naive dt) os accelerations
 
 
-let step [n] (dt: real) (os: [n]pointmass) : [n]pointmass =
+let step [n] (dt: real) (speed: f32) (os: [n]pointmass) : [n]pointmass =
   -- We can assume that the bodies are almost sorted, therefore use a sorting
   -- algorithm with best case on a (nearly|pre) sorted array
-  let sort    = (\kf ks -> bubble_sort_by_key kf (<=) ks)
+  let sort = (\kf ks -> bubble_sort_by_key kf (<=) ks)
   let (bh_tree, min, max) = mk_BH_tree sort os
 
   -- Traverse/apply forces
@@ -47,11 +47,11 @@ let step [n] (dt: real) (os: [n]pointmass) : [n]pointmass =
   ) bh_tree.L (iota n)
 
   let accelerations = map2 acceleration bh_tree.L forces
-  in map2 (advance_object_naive dt) bh_tree.L accelerations
+  in map2 (advance_object_naive (speed*dt)) bh_tree.L accelerations
 
 
 let main (n: i32) (steps: i32) : real =
   let bodies = init_fast 0 n init_rand
   let (res, _) = loop (bodies, i) = (bodies, 0) while i < steps do
-    (step 0.1 bodies, i + 1)
+    (step 0.1 1.0 bodies, i + 1)
   in map (\r -> r.mass) res |> reduce (+) 0
