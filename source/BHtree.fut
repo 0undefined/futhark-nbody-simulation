@@ -1,3 +1,4 @@
+
 -- A Barns-Hut implementation
 import "types"
 import "radixtree"
@@ -60,7 +61,7 @@ let BH_fold [n] 'b
         case #norec ->
           let inner = unsafe t.I[cur]
           let pointmass = {pos=inner.pos, mass=inner.mass, vel=v3.zero}
-          in (op acc cur pointmass, node.parent, #inner cur)
+          in (op acc (-cur) pointmass, node.parent, #inner cur)
         case #rec ptr -> match ptr
           case #inner i -> (acc, i, #inner cur)
           case #leaf i  -> (op acc i (unsafe t.L[i]), cur, ptr)
