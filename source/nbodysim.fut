@@ -44,7 +44,7 @@ let step [n] (dt: real) (speed: f32) (os: [n]pointmass) : [n]pointmass =
     let threshold = cool_threshold leaf.pos ((vx_bound_upper - vx_bound_lower) / 12)
     let op        = cool_op idx leaf
     in BH_fold threshold op v3.zero bh_tree
-  ) bh_tree.L (iota n))
+  ) bh_tree.L (iota n)
   let accelerations = map2 acceleration bh_tree.L forces
   in map2 (advance_object_naive dt) bh_tree.L accelerations
 
