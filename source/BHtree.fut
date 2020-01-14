@@ -79,5 +79,4 @@ let cool_op (self_idx : i32) (self : pointmass) (accumulated_F : v3) (i : i32) (
 
 
 let cool_threshold (self_pos : v3) (theta : real) (delta : u8) (other_pos : v3) : bool =
-  true
---(f32.u8 delta) / v3.(norm (self_pos - other_pos)) < theta
+  (f32.u8 delta) / v3.(norm (self_pos - other_pos)) < theta
