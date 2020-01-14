@@ -15,13 +15,13 @@ let mk_BH_tree [n]
   let normalize = (v3.-min) >-> (v3./(max v3.-min))
 
   let morton    = (.pos) >-> normalize >-> morton30bit
-  let pms       = sort_by_key morton pms
+  let pms'      = sort_by_key morton pms
 
   let empty_inner {left, right, parent, delta} = {pos=v3.zero, mass=0, left, right, parent, delta}
-  let inners    = map empty_inner (mk_radix_tree (map morton pms))
+  let inners    = map empty_inner (mk_radix_tree (map morton pms'))
   let get_pointmass inners ptr =
     match ptr
-    case #leaf  i -> unsafe (pms[i].pos,    pms[i].mass)
+    case #leaf  i -> unsafe (pms'[i].pos,    pms'[i].mass)
     case #inner i -> unsafe (inners[i].pos, inners[i].mass)
 
   let update inners {pos=_, mass=_, left, right, parent, delta} =
@@ -35,7 +35,7 @@ let mk_BH_tree [n]
   let depth     = t32 (f32.log2 (r32 n)) + 2
   let inners = loop inners for _i < depth do
                  map (update inners) inners
-  in ({L = pms, I = inners}, min, max)
+  in ({L = pms', I = inners}, min, max)
 
 
 let BH_fold [n] 'b

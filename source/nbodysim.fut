@@ -45,6 +45,8 @@ let step [n] (dt: real) (speed: f32) (os: [n]pointmass) : [n]pointmass =
     let op        = cool_op idx leaf
     in BH_fold threshold op v3.zero bh_tree
   ) bh_tree.L (iota n)
+
+  -- Apply accelerations, and update velocity and position
   let accelerations = map2 acceleration bh_tree.L forces
   in map2 (advance_object_naive (speed*dt)) bh_tree.L accelerations
 
