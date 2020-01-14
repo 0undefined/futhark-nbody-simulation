@@ -29,12 +29,14 @@ let init_rand (seed: i32) (n: i32) : [n]pointmass =
 
 
 -- Arguments are solely for compatability, `_n` must be equal to 5
-let init_solar (_seed: i32) (_n: i32) : [5]pointmass =
+let init_solar (_seed: i32) (_n: i32) : [6]pointmass =
   [{pos=vec (-290)     0  0, vel=vec    0  ( 122) 0, mass=mass_bound/25},  -- Big with orbit
    {pos=vec (-267)     0  0, vel=vec    0  ( 219) 0, mass=mass_bound/300}, -- orbit
    {pos=vec (  75)     0  0, vel=vec    0  ( 259) 0, mass=mass_bound/250},
    {pos=vec ( 375) (-375) 0, vel=vec (-69) ( -69) 0, mass=mass_bound/40},
-   {pos=vec (   0) (-180) 0, vel=vec (160) (   0) 0, mass=mass_bound/60}]
+   {pos=vec (   0) (-180) 0, vel=vec (160) (   0) 0, mass=mass_bound/60},
+   {pos=vec (   0) (-280) 0, vel=vec (260) (   0) 0, mass=mass_bound}]
+  -- {pos=v3.zero, vel=v3.zero, mass=mass_bound}]
 
 
 let init_heavy_center
