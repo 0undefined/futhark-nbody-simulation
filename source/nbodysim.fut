@@ -40,8 +40,8 @@ let step [n] (dt: real) (speed: f32) (os: [n]pointmass) : [n]pointmass =
   let (bh_tree, min, max) = mk_BH_tree sort os
 
   -- Traverse/apply forces
-  let forces = trace(map2 (\leaf idx ->
-    let threshold = cool_threshold leaf.pos ((vx_bound_upper - vx_bound_lower) / 6)
+  let forces = map2 (\leaf idx ->
+    let threshold = cool_threshold leaf.pos ((vx_bound_upper - vx_bound_lower) / 12)
     let op        = cool_op idx leaf
     in BH_fold threshold op v3.zero bh_tree
   ) bh_tree.L (iota n))
