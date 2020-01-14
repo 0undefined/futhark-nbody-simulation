@@ -39,7 +39,8 @@ let render [n] (os: [n]pointmass) (height: i32) (width: i32) : [height][width]i3
   in unflatten height width (scatter (replicate (height * width) backdrop) is cs)
 
 
-type text_content = (i32, f32,f32,f32,f32,f32, f32,f32,f32,f32,f32,
+type text_content = (i32,f32,
+              f32,f32,f32,f32,f32, f32,f32,f32,f32,f32,
 		          f32,f32,f32,f32,f32, f32,f32,f32,f32,f32,
 		          f32,f32,f32,f32,f32, f32,f32,f32,f32,f32, i32)
 
@@ -91,7 +92,7 @@ module lys: lys with text_content = text_content = {
     in unflatten s.height s.width (scatter (replicate (s.height * s.width) backdrop) is cs)
 
   type text_content = text_content
-  let text_format   = "FPS: %d
+  let text_format   = "FPS: %d\nspeed: %.2f
   v: %.2f x: %.2f y: %.2f z: %.2f m: %.2f
   v: %.2f x: %.2f y: %.2f z: %.2f m: %.2f
   v: %.2f x: %.2f y: %.2f z: %.2f m: %.2f
@@ -102,7 +103,7 @@ module lys: lys with text_content = text_content = {
 
 
   let text_content fps (s: state) = (
-    t32 fps,
+    t32 fps, s.speed,
     v3.norm s.objects[0].vel, s.objects[0].pos.x, s.objects[0].pos.y, s.objects[0].pos.z, s.objects[0].mass,
     v3.norm s.objects[1].vel, s.objects[1].pos.x, s.objects[1].pos.y, s.objects[1].pos.z, s.objects[1].mass,
     v3.norm s.objects[2].vel, s.objects[2].pos.x, s.objects[2].pos.y, s.objects[2].pos.z, s.objects[2].mass,
