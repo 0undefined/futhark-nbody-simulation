@@ -53,6 +53,6 @@ let step [n] (dt: real) (speed: f32) (os: [n]pointmass) : [n]pointmass =
 
 let main (n: i32) (steps: i32) : real =
   let bodies = trace(init_fast 0 n init_rand)
-  let (res, _) = loop (bodies, i) = (bodies, 0) while i < steps do
-    (step_naive 0.1 1.0 bodies, i + 1)
+  let res = loop bodies=bodies for i < steps do
+    step 0.1 1.0 bodies
   in map (\r -> r.mass) res |> reduce (+) 0
