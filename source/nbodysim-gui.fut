@@ -55,8 +55,8 @@ module lys: lys with text_content = text_content = {
 
 
   let init (seed: i32) (height: i32) (width: i32) : state =
-    --{objects = init_fast seed 6 (\a b -> init_heavy_center a b init_solar), speed = 1024f32, height, width, paused = true}
-    {objects = init_fast seed 80 init_rand, speed = 1f32, height, width, paused = true}
+    --{objects=init_fast seed 6 (\a b -> init_heavy_center a b init_solar), speed=1f32, height, width, paused=true}
+    {objects=init_fast seed 80 init_rand, speed=1f32, height, width, paused=true}
 
 
   let resize (height: i32) (width: i32) (s: state) =
