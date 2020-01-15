@@ -27,9 +27,9 @@ let acceleration (a: pointmass) (f: v3) : v3 = v3.scale (1/a.mass) f
 
 
 let step_naive [n] (dt: real) (speed: f32) (os: [n]pointmass) : [n]pointmass =
-  let forces = trace(map2 (\i o ->
+  let forces = map2 (\i o ->
     scatter (map (\p -> force o p) os) [i] [v3.zero] |> reduce_comm (v3.+) v3.zero
-  ) (iota n) os)
+  ) (iota n) os
   let accelerations = map2 acceleration os forces
   in map2 (advance_object_naive (speed*dt)) os accelerations
 
@@ -55,8 +55,7 @@ let step [n] (dt: real) (speed: f32) (os: [n]pointmass) : [n]pointmass =
 
 
 let main (n: i32) (steps: i32) : real =
-  let bodies : [n]pointmass = init_fast 0 6 init_solar
+  let bodies : [n]pointmass = init_fast 0 7 init_solar
   let res = loop bs=bodies for i < steps do
-    let _ = trace(i)
-    in step 0.1 0.1 bs
+    step 0.1 0.1 bs i
   in map (\r -> r.mass) res |> reduce (+) 0

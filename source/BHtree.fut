@@ -18,7 +18,7 @@ let mk_BH_tree [n]
   let pms'      = sort_by_key morton pms
 
   let empty_inner {left, right, parent, delta} = {pos=v3.zero, mass=0, left, right, parent, delta}
-  let inners    = map empty_inner (trace <| mk_radix_tree (trace <| map morton pms'))
+  let inners    = map empty_inner (mk_radix_tree (map morton pms'))
   let get_pointmass inners ptr =
     match ptr
     case #leaf  i -> unsafe (pms'[i].pos,    pms'[i].mass)
