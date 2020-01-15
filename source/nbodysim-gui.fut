@@ -4,9 +4,21 @@ import "init"     -- Initialization functions
 import "nbodysim" -- Simulation functions
 
 module v2 = mk_vspace_2d f32
-type v2 = v2.vector
+type   v2 = v2.vector
 
-let step_function = step
+type text_content = (
+  i32,f32,
+  f32,f32,f32,f32,f32, -- vel, pos{x,y,z}, mass
+  f32,f32,f32,f32,f32,
+  f32,f32,f32,f32,f32,
+  f32,f32,f32,f32,f32,
+  f32,f32,f32,f32,f32,
+  f32,f32,f32,f32,f32,
+  i32)
+
+let step_fun = step
+
+
 -- return flat index + colour of point
 let drawpoint (x: f32) (y: f32) (z: f32) (w: f32) (height: i32) (width: i32) : (i32, i32) =
   -- ignore if out of window bounds
@@ -40,11 +52,6 @@ let render [n] (os: [n]pointmass) (height: i32) (width: i32) : [height][width]i3
   in unflatten height width (scatter (replicate (height * width) backdrop) is cs)
 
 
-type text_content = (i32,f32,
-              f32,f32,f32,f32,f32, f32,f32,f32,f32,f32,
-              f32,f32,f32,f32,f32, f32,f32,f32,f32,f32,
-              f32,f32,f32,f32,f32, f32,f32,f32,f32,f32, i32)
-
 module lys: lys with text_content = text_content = {
   type state = {
     objects: []pointmass,
@@ -68,7 +75,7 @@ module lys: lys with text_content = text_content = {
 
   let keydown (k: i32) (s: state) =
     if      k == SDLK_SPACE then s with paused  = !s.paused
-    else if k == SDLK_n     then s with objects = step_function 0.1 s.speed s.objects
+    else if k == SDLK_n     then s with objects = step_fun 0.1 s.speed s.objects
     else if k == SDLK_j     then s with speed = s.speed - 0.05
     else if k == SDLK_k     then s with speed = s.speed + 0.05
     else s
@@ -81,7 +88,7 @@ module lys: lys with text_content = text_content = {
 
   let event (e: event) (s: state) =
     match e
-    case #step dt -> s with objects = if s.paused then s.objects else step_function dt s.speed s.objects
+    case #step dt -> s with objects = if s.paused then s.objects else step_fun dt s.speed s.objects
     case #keydown {key} -> keydown key s
     case _ -> s
 
