@@ -1,0 +1,58 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 2.9 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{nty/global//global/global}
+    \entry{BH-algo}{online}{}
+      \name{author}{2}{}{%
+        {{hash=9292cc686e79c0477b5845658a87d319}{%
+           family={Ventimiglia},
+           familyi={V\bibinitperiod},
+           given={"Tom},
+           giveni={"\bibinitperiod}}}%
+        {{hash=82a77b5c4eff0f19c19723959707771e}{%
+           family={Wayne"},
+           familyi={W\bibinitperiod},
+           given={Kevin},
+           giveni={K\bibinitperiod}}}%
+      }
+      \strng{namehash}{704953754499e57647770320c999eb4c}
+      \strng{fullhash}{704953754499e57647770320c999eb4c}
+      \strng{bibnamehash}{704953754499e57647770320c999eb4c}
+      \strng{authorbibnamehash}{704953754499e57647770320c999eb4c}
+      \strng{authornamehash}{704953754499e57647770320c999eb4c}
+      \strng{authorfullhash}{704953754499e57647770320c999eb4c}
+      \field{sortinit}{V}
+      \field{sortinithash}{75dd7385c90b2252c3ae853a80ca853b}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{[Accessed January 12, 2019]}
+      \field{title}{"The Barnes-Hut Algorithm"}
+      \verb{urlraw}
+      \verb http://arborjs.org/docs/barnes-hut?fbclid=IwAR3pR3V6RcdUf4H_w58a4Pm_UTsZZsq8pFbGhmlPE7CnELlnBxt9I1zG0O8
+      \endverb
+      \verb{url}
+      \verb http://arborjs.org/docs/barnes-hut?fbclid=IwAR3pR3V6RcdUf4H_w58a4Pm_UTsZZsq8pFbGhmlPE7CnELlnBxt9I1zG0O8
+      \endverb
+      \warn{\item Entry 'BH-algo' (References.bib): Invalid format '2019-1-12' of date field 'urldate' - ignoring}
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+
