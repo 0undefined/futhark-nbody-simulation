@@ -2,6 +2,7 @@
 -- entry: main
 -- input { 5000i32 10i32 } auto output
 import "lib/github.com/diku-dk/sorts/bubble_sort"
+import "lib/github.com/diku-dk/sorts/radix_sort"
 import "radixtree"
 import "types"
 import "BHtree"
@@ -36,7 +37,8 @@ let step_naive [n] (dt: real) (speed: f32) (os: [n]pointmass) : [n]pointmass =
 let step [n] (dt: real) (speed: f32) (os: [n]pointmass) : [n]pointmass =
   -- We can assume that the bodies are almost sorted, therefore use a sorting
   -- algorithm with best case on a (nearly|pre) sorted array
-  let sort = (\kf ks -> bubble_sort_by_key kf (<=) ks)
+  --let sort = (\kf ks -> bubble_sort_by_key kf (<) ks)
+  let sort = (\kf ks -> radix_sort_by_key kf u32.num_bits (u32.get_bit) ks)
   let (bh_tree, _, _) = mk_BH_tree sort os
 
   -- Traverse/apply forces

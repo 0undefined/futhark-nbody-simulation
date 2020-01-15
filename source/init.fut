@@ -51,6 +51,6 @@ let init_fast (seed: i32) (n: i32) (init_func: i32 -> i32 -> [n]pointmass) : [n]
   -- Create pointmasses
   let bodies = init_func seed n
   -- Create BHTree / Sort
-  let sort = (\kf ks -> radix_sort_by_key kf 31 (u32.get_bit) ks)
+  let sort = (\kf ks -> radix_sort_by_key kf u32.num_bits (u32.get_bit) ks)
   let ({L, I}, _, _) = mk_BH_tree sort bodies
   in L
