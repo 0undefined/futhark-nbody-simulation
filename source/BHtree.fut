@@ -45,8 +45,6 @@ let BH_fold [n] 'b
     (t: bh [n]) : b =
   (.1) <|
   loop (acc, cur, prev) = (initial, 0, #inner (-1)) while cur != -1 do
-      --let _ = trace(t.L)
-      --let _ = trace (acc, cur, prev)
       let node       = unsafe t.I[cur]
       let from_left  = prev == node.left
       let from_right = prev == node.right
@@ -57,7 +55,7 @@ let BH_fold [n] 'b
         -- First encounter and in this BB?
         else if !from_right && threshold node.delta node.pos
         then #rec node.left
-        else  #norec
+        else #norec
       in match rec_child
         case #norec ->
           let pointmass = {pos=node.pos, mass=node.mass, vel=v3.zero}
