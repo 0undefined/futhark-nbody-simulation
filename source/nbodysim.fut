@@ -34,7 +34,7 @@ let step_naive [n] (dt: real) (speed: f32) (os: [n]pointmass) : [n]pointmass =
   in map2 (advance_object_naive (speed*dt)) os accelerations
 
 
-let step [n] (dt: real) (speed: f32) (os: [n]pointmass) (i: i32): [n]pointmass =
+let step [n] (dt: real) (speed: f32) (os: [n]pointmass) : [n]pointmass =
   -- We can assume that the bodies are almost sorted, therefore use a sorting
   -- algorithm with best case on a (nearly|pre) sorted array
   --let sort = (\kf ks -> bubble_sort_by_key kf (<) ks)
@@ -45,7 +45,6 @@ let step [n] (dt: real) (speed: f32) (os: [n]pointmass) (i: i32): [n]pointmass =
   let forces = map2 (\leaf idx ->
     let threshold = cool_threshold leaf.pos ((vx_bound_upper - vx_bound_lower) / 12)
     let op        = cool_op idx leaf
-    let _ = if i == 64 then trace (leaf, bh_tree) else (leaf, bh_tree)
     in BH_fold threshold op v3.zero bh_tree
   ) bh_tree.L (iota n)
   --let forces = replicate n v3.zero
@@ -59,5 +58,5 @@ let main (n: i32) (steps: i32) : real =
   let bodies : [n]pointmass = init_fast 0 6 init_solar
   let res = loop bs=bodies for i < steps do
     let _ = trace(i)
-    in step 0.1 0.1 bs i
+    in step 0.1 0.1 bs
   in map (\r -> r.mass) res |> reduce (+) 0
