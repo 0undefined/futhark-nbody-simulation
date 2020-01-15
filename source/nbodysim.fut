@@ -45,6 +45,7 @@ let step [n] (dt: real) (speed: f32) (os: [n]pointmass) : [n]pointmass =
     let op        = cool_op idx leaf
     in BH_fold threshold op v3.zero bh_tree
   ) bh_tree.L (iota n)
+  --let forces = replicate n v3.zero
 
   -- Apply accelerations, and update velocity and position
   let accelerations = map2 acceleration bh_tree.L forces
@@ -52,7 +53,13 @@ let step [n] (dt: real) (speed: f32) (os: [n]pointmass) : [n]pointmass =
 
 
 let main (n: i32) (steps: i32) : real =
-  let bodies : [n]pointmass = init_fast 0 6 init_solar
+  let bodies : [n]pointmass = init_fast 0 3 init_solar
   let (res, _) = loop (bodies, i) = (bodies, 0) while i < steps do
-    (step 0.1 0.1 bodies, i + 1)
+		   if i > 62 then
+		     let _ = trace(i)
+		     --let _ = trace((step 0.1 0.1 bodies, i + 1))
+		     in (step 0.1 0.1 bodies, i + 1)
+		   else
+		     let _ = trace(i)
+		     in (step 0.1 0.1 bodies, i + 1)
   in map (\r -> r.mass) res |> reduce (+) 0
