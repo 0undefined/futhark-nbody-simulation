@@ -44,7 +44,8 @@ let BH_fold [n] 'b
     (initial: b)
     (t: bh [n]) : b =
   (.1) <|
-    loop (acc, cur, prev) = (initial, 0, #inner (-1)) while cur != -1 do
+  loop (acc, cur, prev) = (initial, 0, #inner (-1)) while cur != -1 do
+      let _ = trace(t.L)
       let _ = trace (acc, cur, prev)
       let node       = unsafe t.I[cur]
       let from_left  = prev == node.left
