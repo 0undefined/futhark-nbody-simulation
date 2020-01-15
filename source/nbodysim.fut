@@ -17,7 +17,7 @@ let advance_object_naive (dt: real) (o: pointmass) (a: v3) : pointmass =
 let force (a: pointmass) (b: pointmass) : v3 =
   let G'       = 1f32 -- -6.674e-11
   let r        = v3.(b.pos - a.pos)
-  let inv_dist = 1 / v3.norm r -- f32.max 1f32 (v3.norm r)
+  let inv_dist = 1 / f32.max 1f32 (v3.norm r)
   let r'       = v3.scale inv_dist r
   in v3.scale (G' * a.mass * b.mass * inv_dist**2) r'
 
