@@ -29,14 +29,15 @@ let init_rand (seed: i32) (n: i32) : [n]pointmass =
 
 
 let init_circle (seed: i32) (n: i32) : [n]pointmass =
-  let filter_fun (bs: [n]pointmass) = filter (\b ->
+  let c = vec 0 0 0
+  let filter_fun (bs: []pointmass) = filter (\b ->
     let {x, y, z} = b.pos
-    in x*x + y*y + z*z - (vx_bound_upper - vx_bound_lower)**2 < 0
+    in (x-c.x)**2 + (y-c.y)**2 + (z-c.z)**2 - (vx_bound_upper - vx_bound_lower |> (/4f32))**2f32 < 0f32
   ) bs
 
   let bodies = loop b=(init_rand seed n |> filter_fun)
   while length b < n do
-    b++(init_rand seed n |> filter_fun)
+    b++(init_rand (seed+length b) n |> filter_fun)
 
   in bodies[:n]
 
