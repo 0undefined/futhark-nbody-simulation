@@ -35,9 +35,6 @@ let step_naive [n] (dt: real) (speed: f32) (os: [n]pointmass) : [n]pointmass =
 
 
 let step [n] (dt: real) (speed: f32) (os: [n]pointmass) : [n]pointmass =
-  -- We can assume that the bodies are almost sorted, therefore use a sorting
-  -- algorithm with best case on a (nearly|pre) sorted array
-  --let sort = (\kf ks -> bubble_sort_by_key kf (<) ks)
   let sort = (\kf ks -> radix_sort_by_key kf u32.num_bits (u32.get_bit) ks)
   let (bh_tree, _, _) = mk_BH_tree sort os
 
@@ -47,7 +44,6 @@ let step [n] (dt: real) (speed: f32) (os: [n]pointmass) : [n]pointmass =
     let op        = cool_op idx leaf
     in BH_fold threshold op v3.zero bh_tree
   ) bh_tree.L (iota n)
-  --let forces = replicate n v3.zero
 
   -- Apply accelerations, and update velocity and position
   let accelerations = map2 acceleration bh_tree.L forces

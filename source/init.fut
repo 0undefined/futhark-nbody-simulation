@@ -28,6 +28,19 @@ let init_rand (seed: i32) (n: i32) : [n]pointmass =
   in bodies
 
 
+let init_circle (seed: i32) (n: i32) : [n]pointmass =
+  let filter_fun (bs: [n]pointmass) = filter (\b ->
+    let {x, y, z} = b.pos
+    in x*x + y*y + z*z - (vx_bound_upper - vx_bound_lower)**2 < 0
+  ) bs
+
+  let bodies = loop b=(init_rand seed n |> filter_fun)
+  while length b < n do
+    b++(init_rand seed n |> filter_fun)
+
+  in bodies[:n]
+
+
 -- Arguments are solely for compatability, `_n` must be equal to 5
 let init_solar (_seed: i32) (_n: i32) : [7]pointmass =
   [{pos=vec (-290)     0  0, vel=vec    0  ( 122) 0, mass=mass_bound/25},  -- Big with orbit
@@ -51,5 +64,5 @@ let init_fast (seed: i32) (n: i32) (init_func: i32 -> i32 -> [n]pointmass) : [n]
   let bodies = init_func seed n
   -- Create BHTree / Sort
   let sort = (\kf ks -> radix_sort_by_key kf u32.num_bits (u32.get_bit) ks)
-  let ({L, I}, _, _) = mk_BH_tree sort bodies
-  in L
+  let (tree, _, _) = mk_BH_tree sort bodies
+  in tree.L
