@@ -52,11 +52,6 @@ let render [n] (os: [n]pointmass) (height: i32) (width: i32) : [height][width]i3
   in unflatten height width (scatter (replicate (height * width) backdrop) is cs)
 
 
--- type text_content = (i32,f32,
---               f32,f32,f32,f32,f32, f32,f32,f32,f32,f32,
---               f32,f32,f32,f32,f32, f32,f32,f32,f32,f32,
---               f32,f32,f32,f32,f32, f32,f32,f32,f32,f32, i32)
-
 module lys: lys with text_content = text_content = {
   type state = {
     objects: []pointmass,
@@ -68,7 +63,7 @@ module lys: lys with text_content = text_content = {
 
 
   let init (seed: i32) (height: i32) (width: i32) : state =
-    {objects = init_fast 0 6 init_solar, speed = 1f32, height, width, paused = true}
+    {objects = init_fast 0 240 init_circle, speed = 1f32, height, width, paused = true}
     --{objects = init_fast seed 80 init_rand, speed = 0.1f32, height, width, paused = true}
 
 
