@@ -50,7 +50,7 @@ let step [n] (dt: real) (speed: f32) (os: [n]pointmass) : [n]pointmass =
 
 
 let main (n: i32) (steps: i32) : real =
-  let bodies : [n]pointmass = init_fast 0 n init_solar
+  let bodies : [n]pointmass = init_fast 0 n init_circle
   let res = loop bs=bodies for i < steps do
     step 0.1 0.1 bs
   in map (\r -> r.mass) res |> reduce (+) 0
