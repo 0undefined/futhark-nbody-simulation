@@ -80,3 +80,17 @@ let cool_op (self_idx : i32) (self : pointmass) (accumulated_F : v3) (i : i32) (
 
 let cool_threshold (self_pos : v3) (theta : real) (delta : u8) (other_pos : v3) : bool =
   (f32.u8 delta) / v3.(norm (self_pos - other_pos)) < theta
+
+
+let threshold_denormalized min max (self_pos : v3) (theta : real) (delta : u8) (other_pos : v3) : bool =
+  let factor = max v3.- min |> \{x, y, z} -> real.max x (real.max y z)
+  let s =  (1 / real.u8 delta ** 2) * factor
+  let d =v3.(norm (self_pos - other_pos))
+  in s / d < theta
+
+-- Asume that the unitspaces axis are of same length (unit)
+let threshold_denorm' (min : real) (max : real) (self_pos : v3) (theta : real) (delta : u8) (other_pos : v3) : bool =
+  let factor = max - min
+  let s =  (1 / real.u8 delta ** 2) * factor
+  let d =v3.(norm (self_pos - other_pos))
+  in s / d < theta
