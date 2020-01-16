@@ -25,28 +25,56 @@
 
 \renewcommand\columnseprulecolor{\hspace{17pt}}
 
+\DeclareFixedFont{\ttb}{T1}{txtt}{bx}{n}{9} % for bold
+\DeclareFixedFont{\ttm}{T1}{txtt}{m}{n}{9}  % for normal
+
 \definecolor{mygreen}{RGB}{0,127,0}
 \definecolor{mygray}{RGB}{100,100,100}
 \definecolor{mymauve}{RGB}{100,32,255}
 \definecolor{lgray}{RGB}{230,230,230}
+
+% Colors:
+\definecolor{KU-red}{RGB}{144, 26, 30}
+\definecolor{lightblue}{rgb}{0.6,0.6,1.0}
+\definecolor{deepblue}{rgb}{0,0,0.5}
+\definecolor{deepred}{rgb}{0.6,0,0}
+\definecolor{deepgreen}{rgb}{0,0.5,0}
+\definecolor{yellow}{rgb}{0.6,0.6,0}
+\definecolor{mattegreen}{rgb}{0.45,0.85,0.45}
+\definecolor{gray}{rgb}{0.95,0.95,0.95}
+\definecolor{mediumgray}{rgb}{0.60,0.65,0.63}
+\definecolor{darkgray}{rgb}{0.45,0.45,0.45}
+\definecolor{mattered}{rgb}{1.0, 0.13, 0.32}
+
+% Text Coloring:
+\newcommand{\dgreen} [1]{\textbf{\color{deepgreen}{#1}}}
+\newcommand{\green}  [1]{\textbf{\color{green}{#1}}}
+\newcommand{\yello}  [1]{\textbf{\color{yellow}{#1}}}
+\newcommand{\blue}   [1]{\textbf{\color{blue} {#1}}}
+\newcommand{\red}    [1]{\textbf{\color{red}  {#1}}}
+\newcommand{\grey}   [1]{\textbf{\color{gray} {#1}}}
+\newcommand{\dgrey}  [1]{\textbf{\color{darkgray} {#1}}}
+
+
+
 \lstset{ %
   frame=none,
   backgroundcolor=\color{white},   % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}
-  basicstyle=\footnotesize\ttfamily,        % the size of the fonts that are used for the code
+  basicstyle=\ttm,        % the size of the fonts that are used for the code
   breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
   breaklines=true,                 % sets automatic line breaking
   captionpos=t,                    % sets the caption-position to bottom
-  commentstyle=\color{mygreen},    % comment style
+  commentstyle=\ttb\color{mediumgray},
   deletekeywords={...},            % if you want to delete keywords from the given language
   escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
   extendedchars=true,              % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
   keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
-  keywordstyle=\color{blue},       % keyword style
+  keywordstyle=\ttb\color{deepblue},
   language=,                 % the language of the code
   morekeywords={*,...},            % if you want to add more keywords to the set
   numbers=left,                    % where to put the line-numbers; possible values are (none, left, right)
   numbersep=5pt,                   % how far the line-numbers are from the code
-  numberstyle=\tiny\color{mygray}, % the style that is used for the line-numbers
+  numberstyle=\ttb\color{darkgray}
   rulecolor=\color{black},         % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
   showspaces=false,                % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
   showstringspaces=false,          % underline spaces within strings only
