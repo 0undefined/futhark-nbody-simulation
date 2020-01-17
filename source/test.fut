@@ -23,13 +23,13 @@ let simulate pms theta :([]real, []real) =
 
 
 
-let test =
+entry test =
   (xps:    [n]f32)
   (yps:    [n]f32)
   (zps:    [n]f32)
   (xvs:    [n]f32)
   (yvs:    [n]f32)
   (zvs:    [n]f32)
-  (masses: [n]f32) : =
+  (masses: [n]f32) =
   let bodies : [n]pointmass = map3 wrap_body (zip3 xps yps zps) (zip3 xvs yvs zvs) masses
   in simulate bodies pms
