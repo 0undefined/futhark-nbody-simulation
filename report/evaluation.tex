@@ -1,2 +1,52 @@
 Evaluation
+
+NaNs and stuffs at \texttt{source.fut:1337}
+
 \subsection{Benchmarks}
+
+When simulating with a single step on a dataset of the size of $4194304$ ($2^{22}$) we
+reached a speedup of $851.4$.
+
+\begin{Figure}
+  \centering
+  \begin{tikzpicture}
+    \pgfplotsset{set layers}
+    \begin{axis}[
+      scale only axis,
+      width=0.85\textwidth,
+      ymode=log,
+      xmode=log,
+      log basis y={2},
+      log basis x={2},
+      ymin=0, xmin=1023, xmax=33554432,
+      legend entries={Naive, Barnes Hut},
+      legend pos={north west},
+      ylabel style={at={(0.04,0.5)}, align = center},
+      xlabel={Input size},
+      ylabel={Runtime ($\mu$s)},
+      grid=major,
+      grid style={dashed, gray!180},
+      ]
+      \addplot table[x=inputsize,y=naive]{\benchone};
+      \addplot table[x=inputsize,y=hut]{\benchone};
+    \end{axis}
+    \begin{axis}[
+      scale only axis,
+      width=0.85\textwidth,
+      xmode=log,
+      log basis x={2},
+      axis y line*=right,
+      axis x line=none,
+      ymin=0, ymax=870, xmin=1023, xmax=33554432,
+      legend entries={Speedup},
+      legend style={at={(0.03,0.75)},anchor=north west},
+      ylabel style={at={(1.32,0.5)}, align = center},
+      ylabel={Speedup},
+      %grid=major,
+      %grid style={dashed, gray!180},
+      ]
+      \addplot [black] table[x=inputsize,y=speedup]{\benchone};
+    \end{axis}
+  \end{tikzpicture}
+  \captionof{figure}{Benchmarks with 1 step and variable input}\label{fig:eatshit}
+\end{Figure}

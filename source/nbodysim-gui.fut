@@ -16,7 +16,7 @@ type text_content = (
   f32,f32,f32,f32,f32,
   i32)
 
-let step_fun = step
+let step_fun = step_naive
 
 
 -- return flat index + colour of point
@@ -63,7 +63,7 @@ module lys: lys with text_content = text_content = {
 
 
   let init (seed: i32) (height: i32) (width: i32) : state =
-    {objects = init_fast 0 240 init_circle, speed = 1f32, height, width, paused = true}
+    {objects = init_fast seed 240 init_circle, speed = 1f32, height, width, paused = true}
     --{objects = init_fast seed 80 init_rand, speed = 0.1f32, height, width, paused = true}
 
 

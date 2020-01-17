@@ -1,5 +1,7 @@
 \input{preamble}
 
+\pgfplotstableread[col sep=comma]{../benchmarks.csv}\benchone%
+
 \newenvironment{Figure}
   {\par\medskip\noindent\minipage{\linewidth}}
   {\endminipage\par\medskip}

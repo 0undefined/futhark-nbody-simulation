@@ -2,28 +2,33 @@
 \documentclass[11pt,a4paper,titlepage]{article}
 
 \usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
 \usepackage[english]{babel}
 \usepackage[margin=2cm,headheight=13.6cm]{geometry}
+\usepackage[final]{pdfpages}
+\usepackage{amsmath}
+\usepackage{biblatex}
+\usepackage{caption}
 \usepackage{color}
+\usepackage{enumitem}
+\usepackage{float}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage[hidelinks]{hyperref}
 \usepackage{listings}
 \usepackage{mdwlist}
-\usepackage{graphicx}
-\usepackage{xcolor}
-\usepackage{geometry}
-\usepackage{biblatex}
-\usepackage{textcomp}
-\usepackage{caption}
-\usepackage{amsmath}
-\usepackage{float}
-\usepackage{titling}
-\usepackage{pgfkeys}
-\usepackage{enumitem}
-\usepackage{subfig}
-\usepackage{hyperref}
-\usepackage[final]{pdfpages}
 \usepackage{multicol}
+\usepackage{pgfkeys}
+\usepackage{subfig}
+\usepackage{textcomp}
+\usepackage{titling}
+
+\usepackage{tikz}
+\usetikzlibrary{arrows}
+\usepackage{pgfplots}
 
 \renewcommand\columnseprulecolor{\hspace{17pt}}
+
 
 \DeclareFixedFont{\ttb}{T1}{txtt}{bx}{n}{9} % for bold
 \DeclareFixedFont{\ttm}{T1}{txtt}{m}{n}{9}  % for normal
@@ -47,14 +52,15 @@
 \definecolor{mattered}{rgb}{1.0, 0.13, 0.32}
 
 % Text Coloring:
-\newcommand{\dgreen} [1]{\textbf{\color{deepgreen}{#1}}}
-\newcommand{\green}  [1]{\textbf{\color{green}{#1}}}
-\newcommand{\yello}  [1]{\textbf{\color{yellow}{#1}}}
-\newcommand{\blue}   [1]{\textbf{\color{blue} {#1}}}
-\newcommand{\red}    [1]{\textbf{\color{red}  {#1}}}
-\newcommand{\grey}   [1]{\textbf{\color{gray} {#1}}}
-\newcommand{\dgrey}  [1]{\textbf{\color{darkgray} {#1}}}
+\newcommand{\dgreen} [1]{{\color{deepgreen}{#1}}}
+\newcommand{\green}  [1]{{\color{green}{#1}}}
+\newcommand{\yello}  [1]{{\color{yellow}{#1}}}
+\newcommand{\blue}   [1]{{\color{blue} {#1}}}
+\newcommand{\red}    [1]{{\color{red}  {#1}}}
+\newcommand{\grey}   [1]{{\color{gray} {#1}}}
+\newcommand{\dgrey}  [1]{{\color{darkgray} {#1}}}
 
+\newcommand\link[2]{\href{#2}{\blue{#1}}}
 
 
 \lstset{ %
@@ -88,7 +94,7 @@
 
 \usepackage{fancyhdr}
 \pagestyle{fancy}
-\rhead{Simon Rotendahl \& Frederik Kallestrup Mastratisi \& Oscar Nelin}
+\rhead{Frederik K. Mastratisi \& Oscar Nelin \& Simon Rotendahl}
 \usepackage{datetime}
 \usepackage{moresize}
 
@@ -108,7 +114,7 @@
 	\thispagestyle{empty}%
 	\lhead{\textsc{PFP Group Project}}%
     \title{PFP}%
-    \author{Simon Rotendahl \and Frederik Kallestrup Mastratisi \and Oscar Nelin}%
+    \author{Frederik Kallestrup Mastratisi \and Oscar Nelin \and Simon Rotendahl}%
     \newgeometry{left=2cm,bottom=0cm,right=2cm,top=0cm}%
 	\begin{center}\hspace{0pt}\vfill%
     \uppercase{Datalogisk Institut Københavns Universitet}
