@@ -1,0 +1,99 @@
+#!/usr/bin/env sh
+
+SIZES="1024 2048 4096 8192 16384 32768 65536 131072 262144 524288 1048576 2097152 4194304 8388608 16777216 33554432"
+PROG=""
+GEN_CSV=false
+
+function compile_or_die() {
+    ls $PROG > /dev/null
+    if [ $? -ne 0 ]; then
+        echo Missing executable! trying make...
+        make $PROG
+        if [ $? -ne 0 ]; then
+            exit 1
+        fi
+    fi
+}
+
+function generate() {
+    for i in $SIZES; do
+        echo -en "$i\r"
+        futhark dataset -b --f32-bounds=-600:600 --i32-bounds=0:100 -g 1i32 -g 50f32 -g 1f32 -g [$i]f32 -g [$i]f32 -g [$i]f32 -g [$i]f32 -g [$i]f32 -g [$i]f32 -g [$i]f32 > data/$i-bodies-bin.in
+    done
+    echo
+}
+
+function benchmark() {
+    if [ ! -z $GEN_CSV ]; then
+        TMPDIR=$(mktemp -d)
+        echo "inputsize,runtime" > ${TMPDIR}/result.res
+    fi
+
+    for i in $SIZES; do
+        echo "-- Benchmark with array lengths of ${i}"
+        if [ ! -z $GEN_CSV ]; then
+            echo -n "$i," >> $TMPDIR/result.res
+            cat test_$i.dat                      \
+                | ./${PROG} -t /dev/stdout -r 10 \
+                |& head -n 10                    \
+                | tr '\n' ' '                    \
+                | ./avg.py                       \
+                >> $TMPDIR/result.res
+        else
+            cat test_$i.dat | ./${PROG} -t /dev/stderr -r 10 > /dev/null
+        fi
+    done
+
+    if [ ! -z $GEN_CSV ]; then
+        mv ${TMPDIR}/result.res results.csv
+        rm -r $TMPDIR
+    fi
+}
+
+function kompile() {
+    IFS=" "
+    read -r -a RES_FILES <<< $(ls -1 results_*.csv | sed -Ee 's/results_(.*)\.csv/\1/g' | tr '\n' ' ')
+    RES=$(pr -mtW 140 results_*.csv \
+        | sed -Ee "s/ +(inputsize|"`tr ' ' '|' <<< $SIZES`")//g" \
+        -e "s/[ \t]+/,/g" \
+        -e "s/(,,)+/,/g")
+    for i in ${RES_FILES[*]}; do
+        RES=`echo $RES | sed -Ee "1 s/runtime/$i/"`
+    done
+    echo $RES
+}
+
+function test_exec() {
+    futhark test ${PROG}.fut
+}
+
+# Parse cli arguments
+while getopts "h?b:t:gck" opt; do
+    case "$opt" in
+    h|\?)
+        echo "usage: $0 [ -h | -? | -b FILE [ -c ] | -t FILE | -g ]"
+        echo "  -h,-?     Show this help text"
+        echo "  -b FILE   Run benchmarks on FILE-futhark executable"
+        echo "  -c        Generate a .csv file with the benchmark results"
+        echo "  -t FILE   Run tests on FILE-futhark executable"
+        echo "  -g        Generate test dataset"
+        echo "  -k        Kompile the csv results into a single csv"
+        exit 0
+        ;;
+    b)  PROG=$OPTARG
+        compile_or_die
+        benchmark
+        break
+        ;;
+    t)  PROG=$OPTARG
+        test_exec
+        break
+        ;;
+    g)  generate
+        break
+        ;;
+    k)  kompile
+        break
+        ;;
+    esac
+done

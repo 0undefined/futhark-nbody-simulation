@@ -53,14 +53,15 @@ let BH_fold [n] 'b
         if from_left
         then #rec node.right
         -- First encounter and in this BB?
-        else if !from_right && threshold node.delta node.pos
+        else if !from_right && (threshold node.delta node.pos |> trace)
         then #rec node.left
         else #norec
       in match rec_child
-        case #norec ->
+         case #norec ->
           let pointmass = {pos=node.pos, mass=node.mass, vel=v3.zero}
-          in (if threshold node.delta node.pos then acc
-	      else op acc (-1) pointmass, node.parent, #inner cur)
+          in (if threshold node.delta node.pos
+              then acc
+	            else  op acc (-1) pointmass, node.parent, #inner cur)
         case #rec ptr -> match ptr
           case #inner i -> (acc, i, #inner cur)
           case #leaf  i -> (op acc i (unsafe t.L[i]), cur, ptr)
