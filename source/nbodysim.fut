@@ -30,14 +30,10 @@ let advance_object (dt: real) (o: pointmass) (a: v3) : pointmass =
 
 
 let force (a: pointmass) (b: pointmass) : v3 =
-  let G        = 1f32 -- 6.674e-11
-  let r = v3.(b.pos - a.pos)
-  let rsqr = v3.dot r r + G * G
-  let invr = 1.0f32 / f32.sqrt rsqr
-  let invr3 = invr * invr * invr
-  let s = b.mass * invr3
-  in v3.scale s r
-
+  let G     = 1f32 -- 6.674e-11
+  let r     = v3.(b.pos - a.pos)
+  let invr  = 1.0f32 / (v3.norm r + G) -- f32.sqrt rsqr
+  in v3.scale (b.mass * invr * invr * invr) r
 
 
 let step_naive [n] (dt: real) (speed: f32) (os: [n]pointmass) : [n]pointmass =
@@ -66,11 +62,14 @@ let step [n] (dt: real) (speed: f32) (os: [n]pointmass) : [n]pointmass =
   --let accelerations = map2 acceleration bh_tree.L forces
   in map2 (advance_object (speed*dt)) bh_tree.L forces
 
+
 let wrap_body (p: (real, real, real)) (v: (real, real, real)) (mass: real) : pointmass =
   {pos=vec p.1 p.2 p.3, vel=vec v.1 v.2 v.3, mass}
 
+
 let unwrap_body (p : pointmass) =
   ((p.pos.x, p.pos.y, p.pos.z), (p.vel.x, p.vel.y, p.vel.z), p.mass)
+
 
 let main [n]
       (steps:     i32)
