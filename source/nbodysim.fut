@@ -1,8 +1,6 @@
 -- ==
 -- entry: main
-<<<<<<< HEAD
--- input { 5000i32 10i32 } auto output
-import "lib/github.com/diku-dk/sorts/bubble_sort"
+-- input { 7i32 10i32 } auto output
 import "lib/github.com/diku-dk/sorts/radix_sort"
 import "radixtree"
 import "types"
@@ -40,11 +38,11 @@ let step [n] (dt: real) (speed: f32) (os: [n]pointmass) : [n]pointmass =
   -- algorithm with best case on a (nearly|pre) sorted array
   --let sort = (\kf ks -> bubble_sort_by_key kf (<) ks)
   let sort = (\kf ks -> radix_sort_by_key kf u32.num_bits (u32.get_bit) ks)
-  let (bh_tree, _, _) = mk_BH_tree sort os
+  let (bh_tree, min, max) = mk_BH_tree sort os
 
   -- Traverse/apply forces
   let forces = map2 (\leaf idx ->
-    let threshold = cool_threshold leaf.pos ((vx_bound_upper - vx_bound_lower) / 12)
+    let threshold = threshold_denormalized min max leaf.pos 0.5
     let op        = cool_op idx leaf
     in BH_fold threshold op v3.zero bh_tree
   ) bh_tree.L (iota n)
@@ -56,7 +54,7 @@ let step [n] (dt: real) (speed: f32) (os: [n]pointmass) : [n]pointmass =
 
 
 let main (n: i32) (steps: i32) : real =
-  let bodies : [n]pointmass = init_fast 0 n init_circle
-  let res = loop bs=bodies for i < steps do
-    step 0.1 0.1 bs
+  let bodies : [n]pointmass = init_fast 0 n init_solar
+  let res = loop bs=bodies for _i < steps do
+    step_naive 0.1 0.1 bs
   in map (\r -> r.mass) res |> reduce (+) 0
