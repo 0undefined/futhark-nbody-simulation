@@ -1,10 +1,17 @@
 As we further explore the vast universe and discover remote systems, our need to
-simulate heavenly bodies (such as planets, stars, solarsystems and whole
-galaxies) in astrophysics increases faster than ever before, in order to predict
-positions of such bodies in time and space. The need for faster hardware, or
-better performance/faster simulations can be improved by using parallelism and
-more efficient algorithms.\\
-Simulating heavenly bodies can be easily simulating in parallel using a naive
-implementation. However, a naive implementation has an asymptotic runtime of
-$O(n^2)$, which can be done better.\\
-\red{INSERT BRIEF EXPLANATION OF BARNES HUT ALGORITHM}
+simulate interactions between an ever increasing number of celestial bodies
+(such as planets, stars, solarsystems and whole galaxies) continous to increase.
+To do this we need high performance since the interactions can be complex, and
+the number of bodies great. Therefore we need fast software, on fast hardware.
+
+In terms of hardware we use GPU's, since the theoretical perfromance maximum
+is vastly superior to CPU's, the task has to be suited for GPU's, which
+\textit{n}-body simulations are. To obtain fast software we need clever algorithms,
+and calculating these interactions can be done fairly easily, but a naive
+implementation has an asymptotic runtime of $O(n^2)$, which is not ideal when we
+want to simulate for a great deal of bodies.
+
+In this report we will describe and implement the Barnes-Hut algorithm for
+\textit{n}-body simulations. The Barnes-Hut algorithm uses clustering to obtain
+an approximated result, but with a runtime of $O(n \cdot \log{n})$.
+%\red{INSERT BRIEF EXPLANATION OF BARNES HUT ALGORITHM}
