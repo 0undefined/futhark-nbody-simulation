@@ -17,19 +17,19 @@ on some threshold $\theta$ we determine when we should calculate the interaction
 between the actual pointmasses, and when to calculate it for the clustered
 representation.
 \subsection{Naive simulation}
-The naive simulation is to simply put it, apply the sum of all forces from all
+The naive simulation is simply put, apply the sum of all forces from all
 other pointmasses to all pointmasses:         \\
-$B: \mbox{Bodies},$                           \\
+$B: \text{Bodies},$                           \\
 $n: |B|,$                                     \\
-$b^i_m: \mbox{mass of } b^i,$                 \\
-$b^i_p: \mbox{position of } b^i \mbox{represented as a $d$-dimensional vector}$\\
-$b^i_f: \mbox{force of } b^i,$                \\
-$\Delta t: \mbox{Change in time},$                \\
-$r(a, b): b_p - a_p, \mbox{position difference as a $d$-dimensional vector}$\\
-$F(a, b): G \cdot a_m \cdot b_m \cdot |r(b - a)|^2 \cdot (\frac{1}{|r|} \cdot r)$
+$b^i_m: \text{mass of } b^i,$                 \\
+$b^i_p: \text{position of } b^i $\\
+$b^i_f: \text{force of } b^i,$                \\
+$\Delta t: \text{Change in time},$                \\
+$r(a, b): b_p - a_p, \text{position difference of $a$ and $b$}$\\
+$F(a, b): G \cdot a_m \cdot b_m \cdot |r(b - a)|^2 \cdot \left(\frac{1}{|r|} \cdot r\right)$
 $$\forall b \in B (\forall a \in B \backslash \left\{ b^i\right\} | b^i_F = \sum F(b^i, a^i))$$
 
-We then apply the force as aøcceleration scaled with $\Delta t$ on velocity
+We then apply the force as acceleration scaled with $\Delta t$ on velocity
 times $\Delta t$ and apply the velocity as a change in position to each
 pointmass in the simulation.
 
@@ -38,22 +38,38 @@ If we try and parallelize this computation we can do this with a work and span o
 
 \subsection{Barnes-Hut simulation}
 To perform this clustered \textit{n}-body simulation, we make use of the
-Barnes-Hut algorithm\cite{BH-algo}. In Barnes-Hut an octree is typically used for 3D
-spaces and a quadtree for 2D spaces. This is typically done since the space
-containing these bodies can be subdivided into these types of trees. A 2D
-exmaple of this can be seen in figure \ref{fig:subdivision}.
+Barnes-Hut algorithm\cite{BH-algo}. The main idea is to subdivide the space into
+regions, when we then want to calculate the interactions between a body ($a$)
+and some bodies ($as$) we check how far away $as$ are from $a$, if this distance
+is too far, based on some threshold, we instead elect to apporximate the
+interaction between $a$ and $as$, by using the region containing $as$ as a
+single body representation of $as$.
 
+We will now look at two different datastructures that can contain this subdivsion
+1) a quadtree, this is typically used for 2D spaces (an octree is used for 3D
+spaces), 2) a binary radix-tree, we examine a binary radix-tree since it is used
+to create an octree for 3D spaces in \cite{main-ref}, but since Barnes-Hut is
+tree agnostic we might be able to create an efficient implementation using a
+binary radix-tree.
+
+\subsubsection{Using an quadtree}
+As meantioned previously Barnes-Hut subdivides the space containing the bodies,
+this is done untill a region of the subdivision contains $0$ or $1$. We will here
+describe how it works for a 2D space using a quadtree, however this approach is
+identical for a 3D space using an octree, it is just easier to visualize using
+2D.
+
+Figure \ref{fig:subdivision} visualizes the subdivision of 2D space into regions
+as well as the corresponding quadtree.
 \begin{Figure}
   \centering
   \includegraphics[width=0.30\textwidth]{assests/example-space}
   \includegraphics[width=0.65\textwidth]{assests/example-tree}
-  \captionof{figure}{A sample space subdivided into regions, with each region
-    containing 1 body. The quadtree created from this 2D space can also be seen.
-  Figure is courtesy by \url{arborjs.org/docs/barnes-hut}}
+  \captionof{figure}{A 2D space subdivided into regions, with each region
+    containing $0$ or $1$ body. The quadtree created from this 2D space can also
+    be seen (nw referers to the north west quadrant etc.) \cite{BH-algo}.}
   \label{fig:subdivision}
 \end{Figure}
-
-However the algorithm is tree agnostic and can use in theory be used on any type
-of tree. We will present the algorithm in terms of a 2D space using a quadtree,
-after that we will present our approach where we use a binary-radix tree instead.
-\subsubsection{Using an octree}
+We see that each region containing more that one body is colored gray in figure
+\ref{fig:division}, these nodes will then store a single body representation of
+it substree's bodies.
