@@ -85,13 +85,13 @@ let cool_threshold (self_pos : v3) (theta : real) (delta : u8) (other_pos : v3) 
 
 let threshold_denormalized min max (self_pos : v3) (theta : real) (delta : u8) (other_pos : v3) : bool =
   let factor = max v3.- min |> \{x, y, z} -> real.max x (real.max y z)
-  let s =  (1 / real.u8 delta ** 2) * factor
+  let s =  (1 / real.u8 (delta*delta / 3)) * factor
   let d =v3.(norm (self_pos - other_pos))
   in s / d < theta
 
 -- Asume that the unitspaces axis are of same length (unit)
 let threshold_denorm' (min : real) (max : real) (self_pos : v3) (theta : real) (delta : u8) (other_pos : v3) : bool =
   let factor = max - min
-  let s =  (1 / real.u8 delta ** 2) * factor
+  let s =  (1 / real.u8 (delta*delta / 3) ) * factor
   let d =v3.(norm (self_pos - other_pos))
   in s / d < theta
