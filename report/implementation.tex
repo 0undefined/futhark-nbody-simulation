@@ -1,1 +1,36 @@
-Implementation
+We implemented the Barnes Hut algorithm in
+\link{Futhark}{https://futhark-lang.org/}: a purely functional,
+data parallel, programming language.
+
+We ended up not using an octree due to the complexity of the implementation and
+time constraints and used a radix tree which we traverse instead. It might be
+favorable to use an octree as an equivalent octree is more shallow than a binary
+radix-tree. This is good since it allows for more parallelism and reduces the
+number recursion steps needed to traverse the tree.\\
+
+\noindent
+The BH algorithm requires the leaves to be sorted, using radix sort and
+subsequently bubble sort would seem like the better option. Bubblesort simply
+because the runtime on nearly or already sorted input is simply better than
+radix sort, but using the bubblesort from the
+\link{futhark sort library}{https://github.com/diku-dk/sorts/}
+proved errornous, either because we used it wrong or because it has a bug -- we
+never reached a conclusion to that, therefore we ended up using radix sort for
+the steps, and since we sort the array anyway in each step we completely
+abandoned sorting it before simulating any steps.
+
+\subsection{Radix Tree}
+% MK_radix_tree
+%  -> duplicates
+
+\subsection{Recursion and futhark}
+% Discuss recursion in BH_fold
+%  -> futhark cant recurse
+Since futhark doesn't support recursion (which is specified in the BH algorithm)
+we need to use loops.
+
+\lstset{firstnumber=41}
+%\lstlisting[firstline=41,lastline=67]{../source/BHtree.fut}
+
+\subsection{Errors}
+% NaN

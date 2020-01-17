@@ -40,13 +40,12 @@ let step_naive [n] (dt: real) (speed: f32) (os: [n]pointmass) : [n]pointmass =
   let apply_forces (o: pointmass) = map (force o) os |> reduce_comm (v3.+) v3.zero
   --let accelerations = map2 acceleration os forces
   let forces = map apply_forces os
-  in map2 (advance_object (dt)) os forces
+  in map2 (advance_object (speed*dt)) os forces
 
 
 let step [n] (dt: real) (speed: f32) (os: [n]pointmass) : [n]pointmass =
   -- We can assume that the bodies are almost sorted, therefore use a sorting
   -- algorithm with best case on a (nearly|pre) sorted array
-  --let sort = (\kf ks -> bubble_sort_by_key kf (<) ks)
   let sort = (\kf ks -> radix_sort_by_key kf u32.num_bits (u32.get_bit) ks)
   let (bh_tree, min, max) = mk_BH_tree sort os
 
@@ -74,7 +73,7 @@ let unwrap_body (p : pointmass) =
 let main [n]
       (steps:     i32)
       (dt:        f32)
-      (epsilon:   f32)
+      (speed:   f32)
       (xps:    [n]f32)
       (yps:    [n]f32)
       (zps:    [n]f32)
@@ -84,7 +83,7 @@ let main [n]
       (masses: [n]f32) : ([n]f32, [n]f32, [n]f32, [n]f32, [n]f32, [n]f32, [n]f32) =
   let bodies : [n]pointmass = map3 wrap_body (zip3 xps yps zps) (zip3 xvs yvs zvs) masses
   --init_circle 0 n
-  let res = loop bodies for _i < steps do step_naive dt epsilon bodies
+  let res = loop bodies for _i < steps do step_naive dt speed bodies
   let (final_pos, final_vel, final_mass) = map unwrap_body (res) |> unzip3
   let (xps', yps', zps') = unzip3 final_pos
   let (xvs', yvs', zvs') = unzip3 final_vel
