@@ -29,7 +29,7 @@ $r(a, b): b_p - a_p, \mbox{position difference as a $d$-dimensional vector}$\\
 $F(a, b): G \cdot a_m \cdot b_m \cdot |r(b - a)|^2 \cdot (\frac{1}{|r|} \cdot r)$
 $$\forall b \in B (\forall a \in B \backslash \left\{ b^i\right\} | b^i_F = \sum F(b^i, a^i))$$
 
-We then apply the force as acceleration scaled with $\Delta t$ on velocity
+We then apply the force as aøcceleration scaled with $\Delta t$ on velocity
 times $\Delta t$ and apply the velocity as a change in position to each
 pointmass in the simulation.
 
@@ -53,4 +53,7 @@ exmaple of this can be seen in figure \ref{fig:subdivision}.
   \label{fig:subdivision}
 \end{Figure}
 
-We then
+However the algorithm is tree agnostic and can use in theory be used on any type
+of tree. We will present the algorithm in terms of a 2D space using a quadtree,
+after that we will present our approach where we use a binary-radix tree instead.
+\subsubsection{Using an octree}
