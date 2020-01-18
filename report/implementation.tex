@@ -49,4 +49,7 @@ tree we accumulate the force.
 \subsection{Threshold}
 
 \subsection{Errors}\label{sec:errors}
-% NaN
+When computing each step we experienced that it would in some cases we would get
+Not-a-Number when constructing the BH-tree. This propagates quickly through the
+whole input as NaN applied with any operator on any number yields NaN. Therefore
+when we traverse the tree NaN values spreads very quickly.
