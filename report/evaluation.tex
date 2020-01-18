@@ -5,7 +5,13 @@ NaNs and stuffs at \texttt{source.fut:1337}
 \subsection{Benchmarks}
 
 When simulating with a single step on a dataset of the size of $4194304$ ($2^{22}$) we
-reached a speedup of $851.4$.
+reached a speedup of $851.4$. Unfortunately the naive implementation took too
+long to finish to realistically add datapoints for $2^{22} < n$. A thing to note
+is the fact that $n$ represents number of bodies, with a 3D velocity and
+position vector and a mass for each body, and using 32-bit floats. When we have
+$n = 2^{25}$ we process a total of $939.5$MB. The BH-algorithm simulates through
+this size in $939.5\mu$s, resulting in a throughput of $931.3$GB/second.
+
 
 \begin{Figure}
   \centering
@@ -48,5 +54,5 @@ reached a speedup of $851.4$.
       \addplot [black] table[x=inputsize,y=speedup]{\benchone};
     \end{axis}
   \end{tikzpicture}
-  \captionof{figure}{Benchmarks with 1 step and variable input}\label{fig:eatshit}
+  \captionof{figure}{Benchmarks with 1 step and variable input.}\label{fig:eatshit}
 \end{Figure}
