@@ -63,8 +63,7 @@ module lys: lys with text_content = text_content = {
 
 
   let init (seed: i32) (height: i32) (width: i32) : state =
-    {objects = init_fast seed 240 init_circle, speed = 1f32, height, width, paused = true}
-    --{objects = init_fast seed 80 init_rand, speed = 0.1f32, height, width, paused = true}
+    {objects = init_solar seed 7, speed = 1f32, height, width, paused = true}
 
 
   let resize (height: i32) (width: i32) (s: state) =
