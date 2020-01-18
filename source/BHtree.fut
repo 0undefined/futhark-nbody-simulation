@@ -32,7 +32,7 @@ let mk_BH_tree [n]
     in {pos=avgpos pl ml pr mr, mass=ml + mr,
         left, right, parent, delta}
 
-  let depth     = t32 (f32.log2 (r32 n)) + 2
+  let depth  = t32 (f32.log2 (r32 n)) + 2
   let inners = loop inners for _i < depth do
                  map (update inners) inners
   in ({L = pms', I = inners}, min, max)
@@ -75,23 +75,23 @@ let force (a: pointmass) (b: pointmass) : v3 =
   in v3.scale (G' * a.mass * b.mass * inv_dist**2) r'
 
 
-let cool_op (self_idx : i32) (self : pointmass) (accumulated_F : v3) (i : i32) (other : pointmass) : v3 =
+let cool_op (self_idx: i32) (self: pointmass) (accumulated_F: v3) (i: i32) (other: pointmass) : v3 =
   if self_idx == i then accumulated_F else (v3.+) accumulated_F (force self other)
 
 
-let cool_threshold (self_pos : v3) (theta : real) (delta : u8) (other_pos : v3) : bool =
+let cool_threshold (self_pos: v3) (theta: real) (delta: u8) (other_pos: v3) : bool =
   (f32.u8 delta) / v3.(norm (self_pos - other_pos)) < theta
 
 
-let threshold_denormalized min max (self_pos : v3) (theta : real) (delta : u8) (other_pos : v3) : bool =
+let threshold_denormalized min max (self_pos: v3) (theta: real) (delta: u8) (other_pos: v3) : bool =
   let factor = max v3.- min |> \{x, y, z} -> real.max x (real.max y z)
   let s =  (1 / real.u8 (delta*delta / 3)) * factor
   let d =v3.(norm (self_pos - other_pos))
   in s / d < theta
 
 -- Asume that the unitspaces axis are of same length (unit)
-let threshold_denorm' (min : real) (max : real) (self_pos : v3) (theta : real) (delta : u8) (other_pos : v3) : bool =
+let threshold_denorm' (min: real) (max: real) (self_pos: v3) (theta: real) (delta: u8) (other_pos: v3) : bool =
   let factor = max - min
-  let s =  (1 / real.u8 (delta*delta / 3) ) * factor
-  let d =v3.(norm (self_pos - other_pos))
+  let s      = (1 / real.u8 (delta * delta / 3)) * factor
+  let d      = v3.(norm (self_pos - other_pos))
   in s / d < theta
