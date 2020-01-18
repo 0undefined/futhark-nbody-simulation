@@ -92,3 +92,11 @@ width of region $r$, $w$ is the total width of the space, and $l$ is the level.
 This means that $\theta$ is easy to calculate.
 
 \subsubsection{Using a binary radix-tree}
+In \cite{main-ref} a way of constructing a binary radix-tree is presented. We want
+the same locality as the quadtree has, that is if two points are close in $n$D
+space (2D specifically for quadtree) so shold they be in the tree. To achevie this
+we use Morton code \cite{wiki:morton} to order the points.
+idea, as in quadtree, is to construct a tree where each subtree of a node contains
+bodies that are close to each other in $n$D space (2D specifically for quadtree).
+To sort the bodies we order them along a space-filling curve, i.e. mapping
+multidimensional data to a single dimension while still keeping locality
