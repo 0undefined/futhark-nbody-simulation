@@ -66,21 +66,21 @@
 \lstset{ %
   frame=none,
   backgroundcolor=\color{white},   % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}
-  basicstyle=\ttm,        % the size of the fonts that are used for the code
+  basicstyle=\footnotesize\ttm,        % the size of the fonts that are used for the code
   breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
   breaklines=true,                 % sets automatic line breaking
   captionpos=t,                    % sets the caption-position to bottom
-  commentstyle=\ttb\color{mediumgray},
+  commentstyle=\ttm\color{mediumgray},
   deletekeywords={...},            % if you want to delete keywords from the given language
   escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
   extendedchars=true,              % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
   keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
-  keywordstyle=\ttb\color{deepblue},
-  language=,                 % the language of the code
+  keywordstyle=\ttm\color{deepblue},
+  language=haskell,                % the language of the code
   morekeywords={*,...},            % if you want to add more keywords to the set
-  numbers=left,                    % where to put the line-numbers; possible values are (none, left, right)
+  numbers=none,                    % where to put the line-numbers; possible values are (none, left, right)
   numbersep=5pt,                   % how far the line-numbers are from the code
-  numberstyle=\ttb\color{darkgray}
+  numberstyle=\ttb\color{darkgray},
   rulecolor=\color{black},         % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
   showspaces=false,                % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
   showstringspaces=false,          % underline spaces within strings only
@@ -91,6 +91,15 @@
   aboveskip=3mm,
   belowskip=3mm,
 }
+
+\lstset{%
+  morekeywords={%
+    map2,
+    reduce,
+    scan,
+    unsafe,
+    length,
+}}
 
 \usepackage{fancyhdr}
 \pagestyle{fancy}

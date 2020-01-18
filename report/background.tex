@@ -16,6 +16,7 @@ version is tree-based meaning that we store each pointmass in a tree, and based
 on some threshold $\theta$ we determine when we should calculate the interaction
 between the actual pointmasses, and when to calculate it for the clustered
 representation.
+
 \subsection{Naive simulation}
 The naive simulation is simply put, apply the sum of all forces from all
 other pointmasses to all pointmasses:         \\
@@ -54,41 +55,54 @@ tree agnostic we might be able to create an efficient implementation using a
 binary radix-tree.
 
 \subsubsection{Using a quadtree}
-As meantioned previously Barnes-Hut subdivides the space containing the bodies,
-this is done untill a region of the subdivision contains $0$ or $1$. We will here
-describe how it works for a 2D space using a quadtree, however this approach is
-identical for a 3D space using an octree, it is just easier to visualize using
-2D.
+As meantioned previously Barnes-Hut subdivides the space containing the bodies.
+This is done untill a region of the subdivision contains $0$ or $1$ elements.
+We will here describe how it works for a 2D space using a quadtree however this
+approach is identical for a 3D space using an octree but it is just easier to
+visualize using 2D.
 
 Figure \ref{fig:subdivision} visualizes the subdivision of 2D space into regions
 as well as the corresponding quadtree.
+
 \begin{Figure}
   \centering
   \includegraphics[width=0.30\textwidth]{assests/example-space}
   \includegraphics[width=0.65\textwidth]{assests/example-tree}
-  \captionof{figure}{A 2D space subdivided into regions, with each region
+  \captionof{figure}{A 2D space subdivided into regions with each region
     containing $0$ or $1$ body. The quadtree created from this 2D space can also
     be seen (nw referers to the north west quadrant etc.) \cite{BH-algo}.}
   \label{fig:subdivision}
 \end{Figure}
-We see that each region containing more than one body is colored gray in figure
-\ref{fig:subdivision} (we call these nodes internal node), internal nodes will
-then store a single body representation of it substree's bodies, so if we were
-to calculate the interaction between node
-$H$ and nodes $B,C,D$ and we find the distance to far, we would use the
-representation stored in $D$'s parent. If they are not to far we travers the tree
-recursively untill we reach the leaves. To determine wheather or not a node is to
-far away we use the quotiens $\frac{s}{d}$ where $s$ is the width of a region and
-$d$ is the distance between the center-of-mass, we hold this up against a threshold.
-The threshold ($\theta$) ends up being the trade-off between accuracy and performance,
-so if $\theta = 0$ no internal node is used as a representation, and we go back
-to the performance of the naive implementation (actually a bit slower due to the
-overhead of constructing the tree). A common value is $\theta = 0$.
 
-The main advantage of using a quadtree (and by extension octree) is the even
-divide in the regions, so if the space it $10$ units wide we know that the region
-at level $3$ in the tree is $1.6667$, that is $s_r=\frac{w}{2l}$ where $s_r$ is the
-width of region $r$, $w$ is the total width of the space, and $l$ is the level.
-This means that $\theta$ is easy to calculate.
+We see in \autoref{fig:subdivision} that each region containing more than one
+body is colored gray (we call these nodes internal nodes). Internal nodes will
+then store a single pointmass representation of its substree bodies such that if
+we were to calculate the interaction between node $H$ and nodes $B, C, D$ and we
+find the distance to be too long then we would use the representation stored in
+$D$'s parent. If they are not too far apart we traverse the tree recursively
+until we reach the leaves. To determine whether or not a node is too distant we
+use the quotients $\frac{s}{|d|}$ where $s$ is the width of a region and $|d|$
+is the euclidean distance between the centres of masses. We compare this
+quotient to a threshold, $\theta$. $\theta$ ends up determining the trade off
+between accuracy and performance. If $\theta = 0$ we dont generalize any
+pointmasses at all and we end up with the same performance of the naive
+implementation (actually a bit slower due to the overhead of constructing the
+tree). A common value is $\theta = 0$.
+
+The main advantage of using a quadtree (and octree, by extension) is the evenly
+divided regions. If the space is $10$ units wide then we know that the region at
+level $3$ of the tree is $1.\overline{6}$; that is $s_r=\frac{w}{2l}$ where
+$s_r$ is the width of region $r$, $w$ is the total width of the space, and $l$
+is the level. This means that $\theta$ is easy to calculate.
 
 \subsubsection{Using a binary radix-tree}
+In \cite{main-ref} a way of constructing a binary radix-tree is presented. We
+want the same locality as the quadtree has, that is if two points are close in
+$n$-dimensional space (2D specifically for quadtree) so should they be close to
+eachother in the tree. To achieve this we use Morton code (also known as a
+Z-order curve) \cite{wiki:morton} to order the points. The idea, as in
+quadtree, is to construct a tree where each subtree of a node contains bodies
+that are close to eachother in $n$-dimensional space (2D specifically for
+quadtree). To sort the bodies we order them along a space-filling curve, i.e.
+mapping multidimensional data to a single dimension while still keeping
+locality.
