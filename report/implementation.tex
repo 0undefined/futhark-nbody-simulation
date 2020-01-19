@@ -1,5 +1,5 @@
 We implemented the Barnes Hut algorithm in
-\link{Futhark}{https://futhark-lang.org/}: a purely functional,
+Futhark\cite{futhark}: a purely functional,
 data parallel, programming language.
 
 We ended up not using an octree -- as the traditional BH is implemented -- due
@@ -40,14 +40,9 @@ may be the reason of our errornous calculations as we later discuss in
 Since futhark doesn't support recursion (which is specified in the BH algorithm)
 we needed to use loops instead. We map over our Barnes Hut ``folding'' function
 such that each pointmass is calculated individually. When looping through the
-tree we accumulate the force.
-
-\begin{Figure}
-  \centering
-\lstset{firstnumber=41}
-\lstinputlisting[firstline=41,lastline=67]{../source/BHtree.fut}
-\captionof{figure}{\texttt{BHtree.fut:41-67}}
-\end{Figure}
+tree we accumulate the force. We accumulate the forces from each node, traverse
+down the tree if the threshold allows it, calculate force from the parent node
+otherwise, and return the accumulated sum of those forces.
 
 \subsection{Threshold}
 The threshold value is used to decide if traversal of a given inner nodes should go

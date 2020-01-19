@@ -19,14 +19,14 @@ use-case basis.
     \pgfplotsset{set layers}
     \begin{axis}[
       scale only axis,
-      width=0.75\textwidth,
+      width=0.70\textwidth,
       % ymode=log,
       % xmode=log,
       % log basis y={2},
       % log basis x={2},
       ymin=0, xmin=0, xmax=1,
       legend entries={RMSE},
-      legend style={at={(0.5175,0.57)},anchor=north west},
+      legend style={at={(0.60,0.60)},anchor=north west},
       ylabel style={at={(0.04,0.5)}, align = center},
       xlabel={$\theta$},
       ylabel={RMSE},
@@ -37,14 +37,14 @@ use-case basis.
     \end{axis}
     \begin{axis}[
       scale only axis,
-      width=0.75\textwidth,
+      width=0.70\textwidth,
       axis y line*=right,
       axis x line=none,
       ymin=3000, ymax=4200, xmin=0, xmax=1,
       legend entries={runtime},
       legend style={at={(0.60,0.45)},anchor=north west},
-      ylabel style={at={(1.40,0.5)}, align = center},
-      ylabel={Runtime in $\mu$s},
+      ylabel style={at={(1.42,0.50)}, align = center},
+      ylabel={Runtime ($\mu$s)},
       %grid=major,
       %grid style={dashed, gray!180},
       ]
@@ -82,7 +82,7 @@ $931.3$GB/second.
     \pgfplotsset{set layers}
     \begin{axis}[
       scale only axis,
-      width=0.75\textwidth,
+      width=0.70\textwidth,
       ymode=log,
       xmode=log,
       log basis y={2},
@@ -101,7 +101,7 @@ $931.3$GB/second.
     \end{axis}
     \begin{axis}[
       scale only axis,
-      width=0.75\textwidth,
+      width=0.70\textwidth,
       xmode=log,
       ymode=log,
       log basis y={2},
@@ -128,3 +128,42 @@ implementations.}\label{fig:eatshit}
 From the difference in increments between the naive and our implementation of
 the BH-algorithm, ie.\ the speeup, in \autoref{fig:eatshit} we can conclude that
 we have indeed achieved a better performing algorithm when $n \gtrsim 2^{15}$
+
+\subsection{Compiling and running}
+To compile and run a benchmark one needs the following programs
+installed on a system:
+
+\begin{itemize}
+  \item Futhark
+  \item OpenCL headers and library
+  \item Your terminal emulator of choice
+\end{itemize}
+
+The procedure is as follows, in a terminal emulator: \\
+\begin{lstlisting}[language=bash]
+  # Generates the datasets we are going to benchmark on
+  # This step might take a while
+$ ./runtest -g
+  # Download the remote packages required by the project
+$ futhark pkg sync
+  # run the benchmarks
+$ futhark bench --backend=opencl nbodysim.fut
+\end{lstlisting}
+
+If generating the large datasets takes too long, you should remove them from the
+\texttt{runtest} (shell) script and remember to remove them from the tests in
+\texttt{nbodysim.fut}.
+
+If one wants to see a visualization of a simulation, one needs to have Make
+installed and run \texttt{\$ make \&\& ./nbodysim-gui}. This simulation
+represents a small galaxy with orbiting planets.
+
+\noindent
+\textbf{Controls}:
+\begin{itemize}
+  \item \texttt{Space}: pause/unpause the simulation
+  \item \texttt{n}: Take a single step
+  \item \texttt{j/k}: alter simulation speed modifier, the lower the slower
+  \item \texttt{F1}: Hide text
+  \item \texttt{ESC}: Exit
+\end{itemize}

@@ -51,6 +51,15 @@ to create an octree for 3D spaces in \cite{main-ref}, but since Barnes-Hut is
 tree agnostic we might be able to create an efficient implementation using a
 binary radix-tree.
 
+\subsubsection{Radixtree vs Octree}
+The main advantage of using octrees over radixtrees is that octrees have a
+greater fanout by a factor of 4. This reduces the best-case depth of the octree
+though if the octree is implemented naively it can have a larger depth than the
+radix tree if theres a bunch of points bunched closely together.\\
+The radix is better than the octree in those cases where we have lot of
+bunched-together points because the naive octree would have a string of
+single-child nodes to a node which would have a very dense node-count.
+
 \subsubsection{Using a quadtree}
 As meantioned previously Barnes-Hut subdivides the space containing the bodies.
 This is done untill a region of the subdivision contains $0$ or $1$ elements.
