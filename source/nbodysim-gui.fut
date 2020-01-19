@@ -16,7 +16,7 @@ type text_content = (
   f32,f32,f32,f32,f32,
   i32)
 
-let step_fun = step
+let step_fun = step 0.2
 
 
 -- return flat index + colour of point
