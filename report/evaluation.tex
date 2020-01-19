@@ -3,15 +3,25 @@ Evaluation
 NaNs and stuffs at \texttt{source.fut:1337}
 
 \subsection{Benchmarks}
+We ran benchmarks on the provided GPGPU-servers. We specifically
+used GPU4 wich has the following hardware specifications:\\
+\texttt{GPU: GeForce RTX 2080 Ti}\\
+\texttt{CPU: Intel(R) Xeon(R) CPU E5-2650 v2}\\
+\texttt{RAM: 119GB available}\footnote{We are unsure about this, since we was
+unable to find the relevant info about memory of the server. Different terminal
+programs claimed different sizes of available random access memory. We also couldn't
+find the memory speed.}\\
 
-When simulating with a single step on a dataset of the size of $4194304$ ($2^{22}$) we
-reached a speedup of $851.4$. Unfortunately the naive implementation took too
-long to finish to realistically add datapoints for $2^{22} < n$. A thing to note
-is the fact that $n$ represents number of bodies, with a 3D velocity and
-position vector and a mass for each body, and using 32-bit floats. When we have
-$n = 2^{25}$ we process a total of $939.5$MB. The BH-algorithm simulates through
-this size in $939.5\mu$s, resulting in a throughput of $931.3$GB/second.
+We solely used the build-in benchmarking tool for futhark, ran from a terminal
+as such: \texttt{futhark bench --backend=opencl nbodysim.fut}.
 
+When simulating with a single step on a dataset of the size of $33,554,432$
+($2^{25}$) we reached a speedup of $7029.6$. A thing to note is the fact that
+$n$ represents number of bodies, with a 3D velocity and position vector and a
+mass for each body, and using 32-bit floats for each axis and the mass. When we
+have $n = 2^{25}$ we process a total of $939.5$MB. Our faster implementation
+simulates through this size in $939.5\mu$s, resulting in a throughput of
+$931.3$GB/second.
 
 \begin{Figure}
   \centering
@@ -56,5 +66,11 @@ this size in $939.5\mu$s, resulting in a throughput of $931.3$GB/second.
       \addplot [black] table[x=inputsize,y=speedup]{\benchone};
     \end{axis}
   \end{tikzpicture}
-  \captionof{figure}{Benchmarks with 1 step and variable input.}\label{fig:eatshit}
+  \captionof{figure}{Benchmarks from simulating 1 step, showing input sizes and
+  corresponding time to execute and corresponding speedup between the two
+implementations.}\label{fig:eatshit}
 \end{Figure}
+
+From the difference in increments between the naive and our implementation of
+the BH-algorithm, ie.\ the speeup, in \autoref{fig:eatshit} we can conclude that
+we have indeed achieved a better performing algorithm when $n \gtrsim 2^{15}$
