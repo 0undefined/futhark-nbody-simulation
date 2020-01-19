@@ -1,5 +1,7 @@
 import "BHtree"
 import "nbodysim"
+import "types"
+import "init"
 import "lib/github.com/diku-dk/sorts/radix_sort"
 
 
@@ -9,7 +11,6 @@ let RMSE [n] (vs : [n]v3) (us : [n]v3) : real =
   in map2 mse vs us |> (reduce_comm (real.+) 0 >-> (/(n*3 |> real.i32)) >-> real.sqrt)
 
 let simulate [n] (pms : [n]pointmass) theta : real =
-
   let sort = (\kf ks -> radix_sort_by_key kf u32.num_bits (u32.get_bit) ks)
   let (bh_tree, min, max) = mk_BH_tree sort pms
   let forces = map2 (\leaf idx ->
@@ -53,6 +54,10 @@ entry configBeforeTommorow pms =
 
 
 let main [n]
+  (theta:     f32)
+  (_steps:    i32)
+  (_dt:       f32)
+  (_speed:    f32)
   (xps:    [n]f32)
   (yps:    [n]f32)
   (zps:    [n]f32)
@@ -60,5 +65,5 @@ let main [n]
   (yvs:    [n]f32)
   (zvs:    [n]f32)
   (masses: [n]f32) =
-  let bodies : []pointmass = map3 wrap_body (zip3 xps yps zps) (zip3 xvs yvs zvs) masses
-  in simulate bodies 0.5
+  let bodies : [n]pointmass = map3 wrap_body (zip3 xps yps zps) (zip3 xvs yvs zvs) masses
+  in simulate bodies theta
