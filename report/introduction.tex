@@ -37,9 +37,13 @@ $ futhark pkg sync
 $ futhark bench --backend=opencl nbodysim.fut
 \end{lstlisting}
 
+If generating the large datasets takes too long, you should remove them from the
+\texttt{runtest} (shell) script and remember to remove them from the tests in
+\texttt{nbodysim.fut}.
+
 If one wants to see a visualization of a simulation, one needs to have Make
-installed and run \texttt{\$ make \&\& ./nbodysim-gui}. This simulation represents a
-small galaxy with orbiting planets.
+installed and run \texttt{\$ make \&\& ./nbodysim-gui}. This simulation
+represents a small galaxy with orbiting planets.
 
 \noindent
 \textbf{Controls}:
