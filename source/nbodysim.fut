@@ -1,3 +1,4 @@
+-- Speed test
 -- ==
 -- entry: main
 -- input @ data/1024-bodies-bin.in
@@ -43,7 +44,7 @@ let step_naive [n] (dt: real) (speed: f32) (os: [n]pointmass) : [n]pointmass =
   in map2 (advance_object (speed*dt)) os forces
 
 
-let step [n] (dt: real) (speed: f32) (os: [n]pointmass) : [n]pointmass =
+let step [n] (theta: f32) (dt: real) (speed: f32) (os: [n]pointmass) : [n]pointmass =
   -- We can assume that the bodies are almost sorted, therefore use a sorting
   -- algorithm with best case on a (nearly|pre) sorted array
   let sort = (\kf ks -> radix_sort_by_key kf u32.num_bits (u32.get_bit) ks)
@@ -51,11 +52,10 @@ let step [n] (dt: real) (speed: f32) (os: [n]pointmass) : [n]pointmass =
 
   -- Traverse/apply forces
   let forces = map2 (\leaf idx ->
-    let threshold = threshold_denormalized min max leaf.pos 0.5
+    let threshold = threshold_denormalized min max leaf.pos theta
     let op        = cool_op idx leaf
     in BH_fold threshold op v3.zero bh_tree
-  ) bh_tree.L (iota n)
-  --let forces = replicate n v3.zero
+  ) bh_tree.L (iota n) |> trace
 
   -- Apply accelerations, and update velocity and position
   --let accelerations = map2 acceleration bh_tree.L forces
@@ -71,9 +71,10 @@ let unwrap_body (p : pointmass) =
 
 
 let main [n]
+      (theta:     f32)
       (steps:     i32)
       (dt:        f32)
-      (speed:   f32)
+      (speed:     f32)
       (xps:    [n]f32)
       (yps:    [n]f32)
       (zps:    [n]f32)
@@ -81,10 +82,13 @@ let main [n]
       (yvs:    [n]f32)
       (zvs:    [n]f32)
       (masses: [n]f32) : ([n]f32, [n]f32, [n]f32, [n]f32, [n]f32, [n]f32, [n]f32) =
+
   let bodies : [n]pointmass = map3 wrap_body (zip3 xps yps zps) (zip3 xvs yvs zvs) masses
-  --init_circle 0 n
-  let res = loop bodies for _i < steps do step_naive dt speed bodies
+
+  let res = loop bodies for _i < steps do step theta dt speed bodies
+
   let (final_pos, final_vel, final_mass) = map unwrap_body (res) |> unzip3
+
   let (xps', yps', zps') = unzip3 final_pos
   let (xvs', yvs', zvs') = unzip3 final_vel
   in (xps', yps', zps', xvs', yvs', zvs', final_mass)
