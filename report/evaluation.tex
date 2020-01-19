@@ -1,9 +1,5 @@
-Though we get not-a-number values in specific cases we can still rely on the
-benchmarks we got since we still do the calculations needed in order to complete
-the computation, ie.\ we don't stop the simulation prematurely because some
-values cannot be used. We ended up with huge speedups for inputs of $n>2^{15}$.
-This is mostly due to the overhead of constructing the tree datastructure that
-we need to traverse.
+We ended up with huge speedups for inputs of $n>2^{15}$.  This is mostly due to
+the overhead of constructing the tree datastructure that we need to traverse.
 
 \subsection{Root mean square error (RMSE)}
 Due to the algorithm uses clustering to approximate forces it is expected that
@@ -171,6 +167,9 @@ If generating the large datasets takes too long, you should remove them from the
 If one wants to see a visualization of a simulation, one needs to have Make
 installed and run \texttt{\$ make \&\& ./nbodysim-gui}. This simulation
 represents a small galaxy with orbiting planets.
+
+Take note that the project was tested with futhark git version $098083d$ and has
+thrown errors with the lys library on newer versions.
 
 \noindent
 \textbf{Controls}:
