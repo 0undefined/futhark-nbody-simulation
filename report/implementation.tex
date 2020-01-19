@@ -21,6 +21,9 @@ the steps, and since we sort the array anyway in each step we completely
 abandoned sorting it before simulating any steps.
 
 \subsection{Barnes Hut Tree}
+The Barnes-Hut (BH) tree is constituted by leaf nodes which have a position, velocity and mass; inner-nodes which have a synthetic position\footnote{calculated as the  
+
+
 % MK_radix_tree
 %  -> duplicates
 When constructing the tree for later traversel, we need to map all coordinates
@@ -47,6 +50,36 @@ tree we accumulate the force.
 \end{Figure}
 
 \subsection{Threshold}
+The threshold value is used to decide if traversal of a given inner nodes should go
+deeper, or if the synthetic mass-point of the inner node should be used as
+approximation for its childrens mass-points. \\
+
+
+The threshold is calculated as the quotient between 'octnode-box-side-length' of
+the given inner node, and the distance between the simulated pointmass and the
+synthetic pointmass of the inner node. If this quotient is below some theta,
+which value is fixed at compilation, then the approximation is used and the
+traversal deeper into this branch of inner nodes stops. \\
+
+Since our BH-tree is implemented as a radix-tree and not an octree the
+'octnode-box-side-length' is not directly avaliable and must be calculated some
+how. Luckly this can be done cheaply from information gathered during the
+construction of the radix-tree; we have the length, \delta, of the longest
+common prefix of the morton code to all the leaf-node that are (grand)children
+to the given inner node. This \delta, with information on how the leaf-nodes
+where transformed into unit-space for morton code calculation  
+If a morton code is looked at 3-bits at a time, then it
+can be interperted as the adress   
+
+
+
+Need to calculate the box, problem whith unit space translation
+
+Multiple approches
+Just go with the x side of the box, which gives other problems
+Make all unit space sides have the same magnetuide, though with loss of precision
+
+
 
 \subsection{Errors}\label{sec:errors}
 When computing each step we experienced that it would in some cases we would get
