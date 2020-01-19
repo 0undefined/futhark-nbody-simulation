@@ -1,6 +1,7 @@
 \input{preamble}
 
 \pgfplotstableread[col sep=comma]{../benchmarks.csv}\benchone%
+\pgfplotstableread[col sep=comma]{../error.csv}\errorrate%
 
 \newenvironment{Figure}
   {\par\medskip\noindent\minipage{\linewidth}}

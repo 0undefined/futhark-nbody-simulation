@@ -43,7 +43,7 @@ let init_circle (seed: i32) (n: i32) : [n]pointmass =
 
 
 -- Arguments are solely for compatability, `_n` must be equal to 5
-let init_solar (_seed: i32) (_n: i32) : [7]pointmass =
+let init_solar (_seed: i32) (_n: i32) : [6]pointmass =
   [{pos=vec (-290)     0  0, vel=vec    0  ( 122) 0, mass=mass_bound/25},  -- Big with orbit
    {pos=vec (-267)     0  0, vel=vec    0  ( 219) 0, mass=mass_bound/300}, -- orbit
    {pos=vec (  75)     0  0, vel=vec    0  ( 259) 0, mass=mass_bound/250},

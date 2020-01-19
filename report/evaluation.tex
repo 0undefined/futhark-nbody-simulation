@@ -1,23 +1,75 @@
-Evaluation
+Though we get not-a-number values in specific cases we can still rely on the
+benchmarks we got since we still do the calculations needed in order to complete
+the computation, ie.\ we don't stop the simulation prematurely because some
+values cannot be used. We ended up with huge speedups for inputs of $n>2^{15}$.
+This is mostly due to the overhead of constructing the tree datastructure that
+we need to traverse.
 
-\subsection{Errnous computations and why hitler did nothing wrong}
-NaNs and stuffs at \texttt{source.fut:1337}
+\subsection{Root mean square error (RMSE)}
+Due to the algorithm uses clustering to approximate forces it is expected that
+it deviates from the naive implementation, which calculate forces on a
+point-to-point basis.\\
+Of course, this can be handled by decreasing the threshold function of the cost
+of reducing performance, but it is a tradeoff one might have to decide on a
+use-case basis.
+
+\begin{Figure}
+  \centering
+  \begin{tikzpicture}
+    \pgfplotsset{set layers}
+    \begin{axis}[
+      scale only axis,
+      width=0.75\textwidth,
+      % ymode=log,
+      % xmode=log,
+      % log basis y={2},
+      % log basis x={2},
+      ymin=0, xmin=0, xmax=1,
+      legend entries={RMSE},
+      legend style={at={(0.5175,0.57)},anchor=north west},
+      ylabel style={at={(0.04,0.5)}, align = center},
+      xlabel={$\theta$},
+      ylabel={RMSE},
+      grid=major,
+      grid style={dashed, gray!180},
+      ]
+      \addplot table[x=theta,y=error]{\errorrate};
+    \end{axis}
+    \begin{axis}[
+      scale only axis,
+      width=0.75\textwidth,
+      axis y line*=right,
+      axis x line=none,
+      ymin=3000, ymax=4200, xmin=0, xmax=1,
+      legend entries={runtime},
+      legend style={at={(0.60,0.45)},anchor=north west},
+      ylabel style={at={(1.40,0.5)}, align = center},
+      ylabel={Runtime in $\mu$s},
+      %grid=major,
+      %grid style={dashed, gray!180},
+      ]
+      \addplot [black] table[x=theta,y=runtime]{\errorrate};
+    \end{axis}
+  \end{tikzpicture}
+  \captionof{figure}{RMSE on a 1024-body simulation with min-max initial
+  x-y-z values of $\pm 10000$.}\label{fig:eatshit}
+\end{Figure}
 
 \subsection{Benchmarks}
 We ran benchmarks on the provided GPGPU-servers. We specifically
 used GPU4 wich has the following hardware specifications:\\
 \texttt{GPU: GeForce RTX 2080 Ti}\\
 \texttt{CPU: Intel(R) Xeon(R) CPU E5-2650 v2}\\
-\texttt{RAM: 119GB available}\footnote{We are unsure about this, since we was
-unable to find the relevant info about memory of the server. Different terminal
+\texttt{RAM: 119GB available}\footnote{We are unsure about this number, since we was
+unable to find the relevant info about memory of the gpu-server. Different terminal
 programs claimed different sizes of available random access memory. We also couldn't
 find the memory speed.}\\
 
 We solely used the build-in benchmarking tool for futhark, ran from a terminal
 as such: \texttt{futhark bench --backend=opencl nbodysim.fut}.
 
-When simulating with a single step on a dataset of the size of $33,554,432$
-($2^{25}$) we reached a speedup of $7029.6$. A thing to note is the fact that
+When simulating with a single step on a dataset with $33,554,432$ elements
+($2^{25}$) we reach a speedup of $7029.6$. A thing to note is the fact that
 $n$ represents number of bodies, with a 3D velocity and position vector and a
 mass for each body, and using 32-bit floats for each axis and the mass. When we
 have $n = 2^{25}$ we process a total of $939.5$MB. Our faster implementation
@@ -30,7 +82,7 @@ $931.3$GB/second.
     \pgfplotsset{set layers}
     \begin{axis}[
       scale only axis,
-      width=0.85\textwidth,
+      width=0.75\textwidth,
       ymode=log,
       xmode=log,
       log basis y={2},
@@ -49,7 +101,7 @@ $931.3$GB/second.
     \end{axis}
     \begin{axis}[
       scale only axis,
-      width=0.85\textwidth,
+      width=0.75\textwidth,
       xmode=log,
       ymode=log,
       log basis y={2},
@@ -67,7 +119,8 @@ $931.3$GB/second.
       \addplot [black] table[x=inputsize,y=speedup]{\benchone};
     \end{axis}
   \end{tikzpicture}
-  \captionof{figure}{Benchmarks from simulating 1 step, showing input sizes and
+  \captionof{figure}{Benchmarks from simulating 1 step with a $\theta$ value of
+    $0.5$, showing input sizes and
   corresponding time to execute and corresponding speedup between the two
 implementations.}\label{fig:eatshit}
 \end{Figure}
