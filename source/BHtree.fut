@@ -48,31 +48,31 @@ let BH_fold [n] 'b
       let node       = unsafe t.I[cur]
       let from_left  = prev == node.left
       let from_right = prev == node.right
+      let threshold_res = threshold node.delta node.pos
       let rec_child : #rec ptr | #norec =
         -- Did we return from left node?
         if from_left
         then #rec node.right
         -- First encounter and in this BB?
-        else if !from_right && (threshold node.delta node.pos |> trace)
+        else if !from_right && !threshold_res
         then #rec node.left
         else #norec
       in match rec_child
-         case #norec ->
+        case #norec ->
           let pointmass = {pos=node.pos, mass=node.mass, vel=v3.zero}
-          in (if threshold node.delta node.pos
+          in (if !threshold_res
               then acc
-	            else  op acc (-1) pointmass, node.parent, #inner cur)
+	            else op acc (-1) pointmass, node.parent, #inner cur)
         case #rec ptr -> match ptr
           case #inner i -> (acc, i, #inner cur)
           case #leaf  i -> (op acc i (unsafe t.L[i]), cur, ptr)
 
 
 let force (a: pointmass) (b: pointmass) : v3 =
-  let G'       = 1f32 -- -6.674e-11
-  let r        = v3.(b.pos - a.pos)
-  let inv_dist = 1 / f32.max 1f32 (v3.norm r)
-  let r'       = v3.scale inv_dist r
-  in v3.scale (G' * a.mass * b.mass * inv_dist**2) r'
+  let G     = 1f32 -- 6.674e-11
+  let r     = v3.(b.pos - a.pos)
+  let invr  = 1.0f32 / (v3.norm r + G) -- f32.sqrt rsqr
+  in v3.scale (b.mass * invr * invr * invr) r
 
 
 let cool_op (self_idx: i32) (self: pointmass) (accumulated_F: v3) (i: i32) (other: pointmass) : v3 =
@@ -85,7 +85,7 @@ let cool_threshold (self_pos: v3) (theta: real) (delta: u8) (other_pos: v3) : bo
 
 let threshold_denormalized min max (self_pos: v3) (theta: real) (delta: u8) (other_pos: v3) : bool =
   let factor = max v3.- min |> \{x, y, z} -> real.max x (real.max y z)
-  let s =  (1 / real.u8 (delta*delta / 3)) * factor
+  let s =  (1 / real.u8 ((delta / 3) * (delta / 3))) * factor
   let d =v3.(norm (self_pos - other_pos))
   in s / d < theta
 
