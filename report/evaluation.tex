@@ -5,7 +5,7 @@ values cannot be used. We ended up with huge speedups for inputs of $n>2^{15}$.
 This is mostly due to the overhead of constructing the tree datastructure that
 we need to traverse.
 
-\subsection{Divergence}
+\subsection{Root mean square error (RMSE)}
 Due to the algorithm uses clustering to approximate forces it is expected that
 it deviates from the naive implementation, which calculate forces on a
 point-to-point basis.\\
@@ -25,11 +25,11 @@ use-case basis.
       % log basis y={2},
       % log basis x={2},
       ymin=0, xmin=0, xmax=1,
-      legend entries={Divergence},
+      legend entries={RMSE},
       legend style={at={(0.5175,0.57)},anchor=north west},
       ylabel style={at={(0.04,0.5)}, align = center},
       xlabel={$\theta$},
-      ylabel={Divergence},
+      ylabel={RMSE},
       grid=major,
       grid style={dashed, gray!180},
       ]
@@ -51,7 +51,7 @@ use-case basis.
       \addplot [black] table[x=theta,y=runtime]{\errorrate};
     \end{axis}
   \end{tikzpicture}
-  \captionof{figure}{Average RMSE on a 1024-body simulation with min-max initial
+  \captionof{figure}{RMSE on a 1024-body simulation with min-max initial
   x-y-z values of $\pm 10000$.}\label{fig:eatshit}
 \end{Figure}
 
