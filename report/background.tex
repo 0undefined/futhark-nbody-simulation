@@ -34,9 +34,6 @@ We then apply the force as acceleration scaled with $\Delta t$ on velocity
 times $\Delta t$ and apply the velocity as a change in position to each
 pointmass in the simulation.
 
-This ultimately result in a computation of $O(n^2)$.
-If we try and parallelize this computation we can do this with a work and span of \red{<INSERT>}.
-
 \subsection{Barnes-Hut simulation}
 To perform this clustered \textit{n}-body simulation, we make use of the
 Barnes-Hut algorithm\cite{BH-algo}. The main idea is to subdivide the space into

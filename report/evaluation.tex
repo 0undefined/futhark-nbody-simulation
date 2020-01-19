@@ -1,4 +1,9 @@
-Evaluation
+Though we get not-a-number values in specific cases we can still rely on the
+benchmarks we got since we still do the calculations needed in order to complete
+the computation, ie.\ we don't stop the simulation prematurely because some
+values cannot be used. We ended up with huge speedups for inputs of $n>2^{15}$.
+This is mostly due to the overhead of constructing the tree datastructure that
+we need to traverse.
 
 \subsection{Errnous computations and why hitler did nothing wrong}
 NaNs and stuffs at \texttt{source.fut:1337}
