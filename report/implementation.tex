@@ -49,7 +49,9 @@ tree we accumulate the force.
 \subsection{Threshold}
 
 \subsection{Errors}\label{sec:errors}
-When computing each step we experienced that it would in some cases we would get
-Not-a-Number when constructing the BH-tree. This propagates quickly through the
-whole input as NaN applied with any operator on any number yields NaN. Therefore
-when we traverse the tree NaN values spreads very quickly.
+We occasionally get not-a-number values which propagates through the BH-tree in
+a single step. We suspect this is happens when planets are in very close
+proximity, giving them the same morton code. We do not handle cases like this
+and the error is inconsistent between scenarios but consistent when given the
+same scenario.
+
