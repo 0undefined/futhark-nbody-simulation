@@ -21,7 +21,9 @@ the steps, and since we sort the array anyway in each step we completely
 abandoned sorting it before simulating any steps.
 
 \subsection{Barnes Hut Tree}
-The Barnes-Hut (BH) tree is constituted by leaf nodes which have a position, velocity and mass; inner-nodes which have a synthetic position\footnote{calculated as the  
+The Barnes-Hut (BH) tree is constituted by leaf nodes which have a position,
+velocity and mass; inner-nodes which have a synthetic
+position\footnote{calculated as the}
 
 
 % MK_radix_tree
@@ -30,9 +32,7 @@ When constructing the tree for later traversel, we need to map all coordinates
 by relative distance. This is done by first normalizing all posisitions,
 applying Morton codes and then sorting all the pointmasses by said Morton code.
 Next we calculate all average positions and sum masses for each branching node
-in the tree. We currently do not handle duplicate Morton codes, which we suspect
-may be the reason of our errornous calculations as we later discuss in
-\autoref{sec:errors}. The result is a record with the leaves and nodes.
+in the tree. The result is a record with the leaves and nodes.
 
 \subsection{Recursion and futhark}
 % Discuss recursion in BH_fold
@@ -57,11 +57,11 @@ which value is fixed at compilation, then the approximation is used and the
 traversal deeper into this branch of inner nodes stops. \\
 
 Since our BH-tree is implemented as a radix-tree and not an octree the
-'octnode-box-side-length' is not directly available and must be calculated some
+``octnode-box-side-length'' is not directly available and must be calculated some
 how. Luckily this can be done cheaply from information gathered during the
-construction of the radix-tree; we have the length, \delta, of the longest
+construction of the radix-tree; we have the length, $\delta$, of the longest
 common prefix of the Morton code to all the leaf-node that are (grand)children
-to the given inner node. This \delta, with information on how the leaf-nodes
+to the given inner node. This $\delta$, with information on how the leaf-nodes
 where transformed into unit-space for Morton code calculation, can be calculated
 into the side-length with the following formula,
 
@@ -88,13 +88,6 @@ We resolve this problem by choosing the axis-transform factor that is greatest;
 in an hypothetical 'equal' unit-space this is equivalent to perturbing the theta
 value by a factor proportional to the difference between the greatest and lowest
 transform factor, depending on which axis the octree node of the given internal node
-is neighboring the point-mass being simulated.     
+is neighboring the point-mass being simulated.
 
-
-\subsection{Errors}\label{sec:errors}
-We occasionally get not-a-number values which propagates through the BH-tree in
-a single step. We suspect this is happens when planets are in very close
-proximity, giving them the same morton code. We do not handle cases like this
-and the error is inconsistent between scenarios but consistent when given the
-same scenario.
 

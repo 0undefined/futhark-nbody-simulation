@@ -1,4 +1,10 @@
-It is definately possible to create huge simulations using this method. Though
+It is definitely possible to create huge simulations using this method. Though
 it might be unprecise due to the fact that we approximate distant bodies but
 that is a tradeoff one have to decide application wise or adjust
 $\theta$ accordingly to the requirements of the simulation.
+
+We can conclude that the Barnes Hut heuristic can be implemented with a tree
+such that the construction of the tree has a depth of $n \log n$ whilst the
+traversal has a asymptotic work of $n^2 \log n$ -- though with a practical
+speedup that increases proportianally with $n^2$ when compared with the naive
+work of $n^2$.
