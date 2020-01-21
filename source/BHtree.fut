@@ -57,15 +57,19 @@ let BH_fold [n] 'b
         else if !from_right && !threshold_res
         then #rec node.left
         else #norec
-      in match rec_child
+      let calc_order : #op i32 pointmass i32 ptr | #acc i32 ptr =
+        match rec_child
         case #norec ->
           let pointmass = {pos=node.pos, mass=node.mass, vel=v3.zero}
-          in (if !threshold_res
-              then acc
-	            else op acc (-1) pointmass, node.parent, #inner cur)
+          in if !threshold_res
+             then #acc node.parent (#inner cur)
+	           else #op (-1) pointmass node.parent (#inner cur)
         case #rec ptr -> match ptr
-          case #inner i -> (acc, i, #inner cur)
-          case #leaf  i -> (op acc i (unsafe t.L[i]), cur, ptr)
+                         case #inner i -> #acc i (#inner cur)
+                         case #leaf  i -> #op i (unsafe t.L[i]) cur ptr
+      in match calc_order
+         case #acc cur ptr -> (acc, cur, ptr)
+         case #op i other cur ptr -> (op acc i other, cur, ptr)
 
 
 let force (a: pointmass) (b: pointmass) : v3 =
