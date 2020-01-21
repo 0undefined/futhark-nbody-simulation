@@ -23,12 +23,12 @@ scaling/implementation wise.
 
 * [x] Get Lys working
 * [x] Add naive implementation to Lys
-* [ ] Create benchmarking stuff
-* [ ] Optimal implementation (Barnes Hut)
+* [x] Create benchmarking stuff
+* [x] Optimal implementation (Barnes Hut)
   + [x] Copy radix tree
   + [x] Copy morton codes
   + [ ] Implement Octree
-  + [ ] Apply simulation steps on said Octree
+  + [x] Apply simulation steps on said Octree
 
 
 ## Barnes hut sources
