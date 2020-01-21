@@ -11,15 +11,20 @@ function compile_or_die() {
         echo Missing executable! trying make...
         make $PROG
         if [ $? -ne 0 ]; then
+            echo Failed to compile executable
             exit 1
         fi
     fi
 }
 
 function generate() {
+    TOTAL_DATASETS=$(echo $SIZES | wc -w)
+    CURRENT=1
     for i in $SIZES; do
-        echo -en "$i\r"
-        futhark dataset -b --f32-bounds=-600:600 --i32-bounds=0:100 -g 0.2f32 -g 1i32 -g 50f32 -g 1f32 -g [$i]f32 -g [$i]f32 -g [$i]f32 -g [$i]f32 -g [$i]f32 -g [$i]f32 -g [$i]f32 > data/$i-bodies-bin.in
+        echo -en "Progress: $CURRENT/$TOTAL_DATASETS\r"
+        #echo -en "$i\r"
+        futhark dataset -b --f32-bounds=-1000:1000 --i32-bounds=0:100 -g 0.5f32 -g 1i32 -g 0.1f32 -g 1f32 -g [$i]f32 -g [$i]f32 -g [$i]f32 -g [$i]f32 -g [$i]f32 -g [$i]f32 -g [$i]f32 > data/$i-bodies-bin.in
+        CURRENT=$(($CURRENT+1))
     done
     echo
 }
@@ -51,7 +56,7 @@ function benchmark() {
     fi
 }
 
-function kompile() {
+function concat_csv() {
     IFS=" "
     read -r -a RES_FILES <<< $(ls -1 results_*.csv | sed -Ee 's/results_(.*)\.csv/\1/g' | tr '\n' ' ')
     RES=$(pr -mtW 140 results_*.csv \
@@ -78,7 +83,7 @@ while getopts "h?b:t:gck" opt; do
         echo "  -c        Generate a .csv file with the benchmark results"
         echo "  -t FILE   Run tests on FILE-futhark executable"
         echo "  -g        Generate test dataset"
-        echo "  -k        Concat csv results into a single csv"
+        echo "  -k        Concatenate csv-file results into a single csv"
         exit 0
         ;;
     b)  PROG=$OPTARG
@@ -93,7 +98,7 @@ while getopts "h?b:t:gck" opt; do
     g)  generate
         break
         ;;
-    k)  kompile
+    k)  concat_csv
         break
         ;;
     esac
