@@ -1,4 +1,4 @@
-We ended up with huge speedups for inputs of $n>2^{15}$.  This is mostly due to
+We ended up with speedups for inputs of $n>2^{15}$.  This is mostly due to
 the overhead of constructing the tree datastructure that we need to traverse.
 
 \subsection{Root mean square error (RMSE)}
@@ -16,10 +16,6 @@ use-case basis.
     \begin{axis}[
       scale only axis,
       width=0.70\textwidth,
-      % ymode=log,
-      % xmode=log,
-      % log basis y={2},
-      % log basis x={2},
       ymin=0, xmin=0, xmax=1,
       legend entries={RMSE},
       legend style={at={(0.60,0.60)},anchor=north west},
@@ -29,20 +25,18 @@ use-case basis.
       grid=major,
       grid style={dashed, gray!180},
       ]
-      \addplot table[x=theta,y=error]{\errorrate};
+      \addplot [blue] table[x=theta,y=error]{\errorrate};
     \end{axis}
     \begin{axis}[
       scale only axis,
       width=0.70\textwidth,
       axis y line*=right,
       axis x line=none,
-      ymin=3000, ymax=4200, xmin=0, xmax=1,
+      ymin=3000, ymax=4400, xmin=0, xmax=1,
       legend entries={runtime},
       legend style={at={(0.60,0.45)},anchor=north west},
       ylabel style={at={(1.42,0.50)}, align = center},
       ylabel={Runtime ($\mu$s)},
-      %grid=major,
-      %grid style={dashed, gray!180},
       ]
       \addplot [black] table[x=theta,y=runtime]{\errorrate};
     \end{axis}
@@ -98,7 +92,7 @@ $931.3$GB/second.
       log basis y={2},
       log basis x={2},
       ymin=0, xmin=1023, xmax=33554432,
-      legend entries={Naive, Barnes Hut},
+      legend entries={Naive, Barnes Hut, $\theta 0.6$},
       legend pos={north west},
       ylabel style={at={(0.04,0.5)}, align = center},
       xlabel={Input size},
@@ -108,25 +102,22 @@ $931.3$GB/second.
       ]
       \addplot table[x=inputsize,y=naive]{\benchone};
       \addplot table[x=inputsize,y=hut]{\benchone};
+      %\addplot table[x=inputsize,y=pointsix]{\benchone};
     \end{axis}
     \begin{axis}[
       scale only axis,
       width=0.70\textwidth,
       xmode=log,
-      ymode=log,
-      log basis y={2},
       log basis x={2},
       axis y line*=right,
       axis x line=none,
-      ymin=0, ymax=7400, xmin=1023, xmax=33554432,
+      xmin=1023, xmax=33554432,
       legend entries={Speedup},
       legend style={at={(0.03,0.75)},anchor=north west},
       ylabel style={at={(1.32,0.5)}, align = center},
       ylabel={Speedup},
-      %grid=major,
-      %grid style={dashed, gray!180},
       ]
-      \addplot [black] table[x=inputsize,y=speedup]{\benchone};
+      \addplot [black] table[x=inputsize,y expr=\thisrow{naive}/\thisrow{hut}]{\benchone};
     \end{axis}
   \end{tikzpicture}
   \captionof{figure}{Benchmarks from simulating 1 step with a $\theta$ value of
