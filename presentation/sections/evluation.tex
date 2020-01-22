@@ -1,0 +1,98 @@
+\begin{frame}
+  \frametitle{Benchmarks ($n = 2^{25}$)}
+  \begin{itemize}
+    \item Naive: 2958267723$\mu$s
+    \item Barnes Hut: 45800125$\mu$s, 64.6 speedup!
+  \end{itemize}
+  \pause
+  \begin{figure}
+  \begin{tikzpicture}
+    \pgfplotsset{set layers}
+    \begin{axis}[
+      scale only axis,
+      width=0.50\textwidth,
+      ymode=log,
+      xmode=log,
+      log basis y={2},
+      log basis x={2},
+      ymin=0, xmin=1023, xmax=33554432,
+      legend entries={\tiny Naive, \tiny Barnes Hut, \tiny Erronous BH},
+      legend pos={north west},
+      ylabel style={at={(0.04,0.5)}, align = center},
+      xlabel={Input size},
+      ylabel={Runtime ($\mu$s)},
+      grid=major,
+      grid style={dashed, gray!80},
+      ]
+      \addplot table[x=inputsize,y=naive]{\benchone};
+      \addplot table[x=inputsize,y=hut]{\benchone};
+      \addplot table[x=inputsize,y=old_hut]{\benchone};
+    \end{axis}
+    \begin{axis}[
+      scale only axis,
+      width=0.50\textwidth,
+      xmode=log,
+      %ymode=log,
+      log basis x={2},
+      %log basis y={2},
+      axis y line*=right,
+      axis x line=none,
+      %ymin=0, % ymax=7400,
+      xmin=1023, xmax=33554432,
+      legend entries={\tiny Speedup},
+      legend style={at={(0.03,0.73)},anchor=north west},
+      ylabel style={at={(1.32,0.5)}, align = center},
+      ylabel={Speedup},
+      ]
+      \addplot [black] table[x=inputsize,y expr=\thisrow{naive}/\thisrow{hut}]{\benchone};
+    \end{axis}
+  \end{tikzpicture}
+  \end{figure}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Root mean square error}
+  \begin{itemize}
+      \item Speed vs precision\pause
+      \item Higher $\theta$ $\rightarrow$ Higher error
+  \end{itemize}\pause
+  
+  \begin{figure}
+  \centering
+  \begin{tikzpicture}
+    \pgfplotsset{set layers}
+    \begin{axis}[
+      scale only axis,
+      width=0.50\textwidth,
+      % ymode=log,
+      % xmode=log,
+      % log basis y={2},
+      % log basis x={2},
+      ymin=0, xmin=0, xmax=1,
+      legend entries={\tiny RMSE},
+      legend style={at={(0.60,0.60)},anchor=north west},
+      ylabel style={at={(0.04,0.5)}, align = center},
+      xlabel={$\theta$},
+      ylabel={RMSE},
+      grid=major,
+      grid style={dashed, gray!80},
+      ]
+      \addplot [blue] table[x=theta,y=error]{\errorrate};
+    \end{axis}
+    \begin{axis}[
+      scale only axis,
+      width=0.50\textwidth,
+      axis y line*=right,
+      axis x line=none,
+      ymin=3000, ymax=4500, xmin=0, xmax=1,
+      legend entries={\tiny runtime},
+      legend style={at={(0.60,0.48)},anchor=north west},
+      ylabel style={at={(1.42,0.50)}, align = center},
+      ylabel={Runtime ($\mu$s)},
+      ]
+      \addplot [black] table[x=theta,y=runtime]{\errorrate};
+    \end{axis}
+  \end{tikzpicture}
+\end{figure}
+\end{frame}

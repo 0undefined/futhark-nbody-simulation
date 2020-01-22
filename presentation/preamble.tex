@@ -1,0 +1,67 @@
+\documentclass{beamer}
+
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{amsfonts}
+\usepackage{xltxtra}
+\usepackage{polyglossia}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{pgfkeys}
+\usepackage{tikz}
+\usepackage{pgfplotstable}
+\usepackage{pgfplots}
+\usepackage{multicol}
+\usepackage{listings}
+
+\setbeamertemplate{caption}[numbered]
+
+
+% Theme
+\usetheme[red]{Verona}
+\usefonttheme{serif}
+
+\AtBeginSection[]{%
+  \begin{frame}
+    %\frametitle{toc}
+    \tableofcontents[currentsection]
+  \end{frame}
+}
+
+\newcommand{\concat}{%
+  \mathbin{{+}\mspace{-8mu}{+}}%
+}
+
+\DeclareFixedFont{\ttb}{T1}{txtt}{bx}{n}{9} % for bold
+\DeclareFixedFont{\ttm}{T1}{txtt}{m}{n}{9}  % for normal
+
+\definecolor{KU-red}{RGB}{144, 26, 30}
+\definecolor{lightblue}{rgb}{0.6,0.6,1.0}
+\definecolor{deepblue}{rgb}{0,0,0.5}
+\definecolor{deepred}{rgb}{0.6,0,0}
+\definecolor{deepgreen}{rgb}{0,0.5,0}
+\definecolor{yellow}{rgb}{0.6,0.6,0}
+\definecolor{mattegreen}{rgb}{0.45,0.85,0.45}
+\definecolor{grey}{rgb}{0.95,0.95,0.95}
+\definecolor{mediumgray}{rgb}{0.60,0.65,0.63}
+\definecolor{darkgray}{rgb}{0.45,0.45,0.45}
+
+\lstset{%
+  language=haskell,
+  morekeywords={%
+      map2,
+      reduce,
+      scan,
+      unsafe,
+      length,
+  },
+  basicstyle=\tiny\ttm,
+  breaklines=true
+  commentstyle=\ttb\color{mediumgrey},
+  emphstyle=\ttb\color{deepred},
+  fillcolor=\color{grey},
+  keywordstyle=\ttb\color{deepblue},
+  showstringspaces=false,
+  stringstyle=\color{deepgreen},
+  tabsize=2,
+}

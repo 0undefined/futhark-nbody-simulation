@@ -1,0 +1,43 @@
+\begin{frame}{Tree Construction}
+\begin{itemize}
+\item Idea: Constructs a radix-tree with some extra information
+\item Radix-tree contruction: $D(n \log n)$ or $D(n^2)$: radix- vs. bubble sort
+\item Adding extra information: $\approx \log n$ iterations over the nodes in the tree, to create aggregate pointmasses - $D(n \log n)$
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Tree Traversal}
+\begin{itemize}
+    \item Post-order Traversal where threshold is checked on first entry
+    \item Done as a loop; each thread does a 'full' traversals
+    \item Loop terminates when either:
+      \begin{itemize}
+          \item Root-node triggers threshold
+          \item Root-node gets re-entered from right-child
+      \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{The Threshold Function I}
+\begin{itemize}
+    \item We should traverse deeper when the ratio of the 'octree-side length' and 'distance between points' gets below a threshold value:
+    $$s/d < \theta$$
+    \item Problem: We are traversing a radix-tree not an octree
+    \item Solution: Use $\delta$ to calculate the side length of the would-be octree-node
+    \begin{itemize}
+        \item $\delta / 3$ tells us how deep we are
+        \item Each level deeper splits the side length in half
+        \item Linear transform from unit space to actual space
+        $$ s = \frac{1}{(\delta/3)^2} * k$$
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{The Threshold Function II}
+\begin{itemize}
+    \item New problem: $k$ is different for each axis (for precision purposes)
+    \item A Solution: From $k_x, k_y, k_z$ choose the biggest $k$ 
+    \item Is equivalent to perturbing $\theta$ by some factor depending on the particles being simulateds orientation to each other and the difference between $k_x, k_y, k_z$ 
+\end{itemize}
+    
+\end{frame}

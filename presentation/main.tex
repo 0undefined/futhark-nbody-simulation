@@ -1,0 +1,41 @@
+\input{preamble.tex}
+\pgfplotstableread[col sep=comma]{../benchmarks.csv}\benchone%
+\pgfplotstableread[col sep=comma]{../error.csv}\errorrate%
+
+\title{Barnes Hut $n$-body simulation}
+\subtitle{PFP 19/20}
+\author[Eggmen]{Simon Rotendahl \\ Oscar Nelin \\ Frederik K. Mastratisi}
+\subject{Computer Science}
+\institute[DIKU]{University of Copenhagen}
+
+\begin{document}
+
+\frame{\titlepage}
+
+%\begin{frame}
+%  \tableofcontents[currentsection]
+%\end{frame}
+
+% * [ ] Errata
+% * [x] Finish background
+% * [ ] Implementation
+% * [ ] Evaluation
+%   + [x] Move benchmark to evaluation and draw conclusions
+% * [ ] Conclusion
+
+\section[Section]{Introduction}
+\input{sections/introduction.tex}
+
+\section[Section]{Background}
+\input{sections/background.tex}
+
+\section[Section]{Implementation}
+\input{sections/implementation.tex}
+
+\section[Section]{Evaluation}
+\input{sections/evluation.tex}
+
+\section[Section]{Errata}
+\input{sections/errata.tex}
+
+\end{document}
