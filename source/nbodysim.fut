@@ -1,44 +1,42 @@
--- Speed test
--- --==
--- entry: main
--- input @ data/1024-bodies-bin.in
--- input @ data/2048-bodies-bin.in
--- input @ data/4096-bodies-bin.in
--- input @ data/8192-bodies-bin.in
--- input @ data/16384-bodies-bin.in
--- input @ data/32768-bodies-bin.in
--- input @ data/65536-bodies-bin.in
--- input @ data/131072-bodies-bin.in
--- input @ data/262144-bodies-bin.in
--- input @ data/524288-bodies-bin.in
--- input @ data/1048576-bodies-bin.in
--- input @ data/2097152-bodies-bin.in
--- input @ data/4194304-bodies-bin.in
--- input @ data/8388608-bodies-bin.in
--- input @ data/16777216-bodies-bin.in
--- input @ data/33554432-bodies-bin.in
-
-
--- speed test 2
+-- speed test BH, varying theta
 -- ==
 -- entry: random_test
--- input {10i32 1f32 1i32 1f32 1f32}
--- input {100i32 1f32 1i32 1f32 1f32}
--- input {1000i32 1f32 1i32 1f32 1f32}
--- input {10000i32 1f32 1i32 1f32 1f32}
--- input {100000i32 1f32 1i32 1f32 1f32}
--- input {1000000i32 1f32 1i32 1f32 1f32}
--- input {10000000i32 1f32 1i32 1f32 1f32}
+-- input {1024i32 0.0f32 1i32 1f32 1f32}
+-- input {1024i32 0.1f32 1i32 1f32 1f32}
+-- input {1024i32 0.2f32 1i32 1f32 1f32}
+-- input {1024i32 0.3f32 1i32 1f32 1f32}
+-- input {1024i32 0.4f32 1i32 1f32 1f32}
+-- input {1024i32 0.5f32 1i32 1f32 1f32}
+-- input {1024i32 0.6f32 1i32 1f32 1f32}
+-- input {1024i32 0.7f32 1i32 1f32 1f32}
+-- input {1024i32 0.8f32 1i32 1f32 1f32}
+-- input {1024i32 0.9f32 1i32 1f32 1f32}
+-- input {1024i32 1.0f32 1i32 1f32 1f32}
 
--- speed test naive
+
+-- speed test BH, varying number of bodies
+-- ==
+-- entry: random_test
+-- input {10i32 0.5f32 1i32 1f32 1f32}
+-- input {100i32 0.5f32 1i32 1f32 1f32}
+-- input {1000i32 0.5f32 1i32 1f32 1f32}
+-- input {10000i32 0.5f32 1i32 1f32 1f32}
+-- input {100000i32 0.5f32 1i32 1f32 1f32}
+-- input {1000000i32 0.5f32 1i32 1f32 1f32}
+-- input {10000000i32 0.5f32 1i32 1f32 1f32}
+
+
+-- speed test naive, varying number of bodies
 -- ==
 -- entry: random_test_naive
--- input {10i32 1f32 1i32 1f32 1f32}
--- input {100i32 1f32 1i32 1f32 1f32}
--- input {1000i32 1f32 1i32 1f32 1f32}
--- input {10000i32 1f32 1i32 1f32 1f32}
--- input {100000i32 1f32 1i32 1f32 1f32}
--- input {1000000i32 1f32 1i32 1f32 1f32}
+-- input {10i32 0.5f32 1i32 1f32 1f32}
+-- input {100i32 0.5f32 1i32 1f32 1f32}
+-- input {1000i32 0.5f32 1i32 1f32 1f32}
+-- input {10000i32 0.5f32 1i32 1f32 1f32}
+-- input {100000i32 0.5f32 1i32 1f32 1f32}
+-- input {1000000i32 0.5f32 1i32 1f32 1f32}
+-- input {10000000i32 0.5f32 1i32 1f32 1f32}
+
 import "lib/github.com/diku-dk/sorts/radix_sort"
 import "radixtree"
 import "types"

@@ -88,7 +88,7 @@ let cool_threshold (self_pos: v3) (theta: real) (delta: u8) (other_pos: v3) : bo
 
 let threshold_denormalized min max (self_pos: v3) (theta: real) (delta: u8) (other_pos: v3) : bool =
   let factor = max v3.- min |> \{x, y, z} -> real.max x (real.max y z)
-  let s =  (1 / 2 ** real.u8 (delta / 3)) * factor
+  let s =  (1 / (2 ** (real.u8 (delta / 3)))) * factor
   let d =v3.(norm (self_pos - other_pos))
   in s / d < theta
 
