@@ -1,6 +1,6 @@
 require {
-  github.com/athas/vector 0.4.4 #3aebc74bafe62ab11347134d48305a3f90465c3f
-  github.com/diku-dk/lys 0.1.0 #02398c179843df665b9bb6f733cb5141c8e59099
-  github.com/diku-dk/cpprandom 1.1.7 #644ed3da98dccfe55dcfa48208923307b2d81f60
-  github.com/diku-dk/sorts 0.3.8 #a221d05c6e19f8245075b6acff96c273424fdc73
+  github.com/athas/vector 0.6.0 #36473256e4834ac9ff31243cceb439c1f79bf1a4
+  github.com/diku-dk/lys 0.1.8 #bc6079ec1570407eb1bb64d866ccd407a87a1d3c
+  github.com/diku-dk/cpprandom 1.2.0 #3d95d8db2ea1aedf5822e729786961c57aaa0dec
+  github.com/diku-dk/sorts 0.3.10 #a9a16f410669a08684182e295ff66f48a085a6bc
 }
