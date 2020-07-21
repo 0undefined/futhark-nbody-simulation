@@ -7,8 +7,8 @@ let lowest  = {x=real.lowest,  y=real.lowest,  z=real.lowest}
 
 
 let mk_BH_tree [n]
-    (sort_by_key: (pointmass -> u32) ->  []pointmass -> []pointmass)
-    (pms: [n]pointmass) =
+    (sort_by_key: (pointmass -> u32) ->  [n]pointmass -> [n]pointmass)
+    (pms: [n]pointmass) : (bh [n], v3, v3) =
   let centers   = map (.pos) pms
   let min       = reduce_comm (v3.map2 real.min) highest centers
   let max       = reduce_comm (v3.map2 real.max) lowest  centers
@@ -43,7 +43,7 @@ let BH_fold [n] 'b
     (op: b -> i32 -> pointmass -> b)
     (initial: b)
     (t: bh [n]) : b =
-  (.1) <|
+  (.0) <|
   loop (acc, cur, prev) = (initial, 0, #inner (-1)) while cur != -1 do
       let node       = unsafe t.I[cur]
       let from_left  = prev == node.left
@@ -82,17 +82,22 @@ let force (a: pointmass) (b: pointmass) : v3 =
 let cool_op (self_idx: i32) (self: pointmass) (accumulated_F: v3) (i: i32) (other: pointmass) : v3 =
   if self_idx == i then accumulated_F else (v3.+) accumulated_F (force self other)
 
-
 let cool_threshold (self_pos: v3) (theta: real) (delta: u8) (other_pos: v3) : bool =
   (f32.u8 delta) / v3.(norm (self_pos - other_pos)) < theta
 
 
 let threshold_denormalized min max (self_pos: v3) (theta: real) (delta: u8) (other_pos: v3) : bool =
   let factor = max v3.- min |> \{x, y, z} -> real.max x (real.max y z)
-  let s =  (1 / real.u8 ((delta / 3) * (delta / 3))) * factor
+  let s =  (1 / 2 ** real.u8 (delta / 3)) * factor
   let d =v3.(norm (self_pos - other_pos))
   in s / d < theta
 
+
+let wrong_threshold_denormalized min max (self_pos: v3) (theta: real) (delta: u8) (other_pos: v3) : bool =
+  let factor = max v3.- min |> \{x, y, z} -> real.max x (real.max y z)
+  let s =  (1 / real.u8 ((delta / 3) * (delta / 3))) * factor
+  let d =v3.(norm (self_pos - other_pos))
+  in s / d < theta
 -- Asume that the unitspaces axis are of same length (unit)
 let threshold_denorm' (min: real) (max: real) (self_pos: v3) (theta: real) (delta: u8) (other_pos: v3) : bool =
   let factor = max - min

@@ -1,5 +1,5 @@
 -- Speed test
--- ==
+-- --==
 -- entry: main
 -- input @ data/1024-bodies-bin.in
 -- input @ data/2048-bodies-bin.in
@@ -17,6 +17,28 @@
 -- input @ data/8388608-bodies-bin.in
 -- input @ data/16777216-bodies-bin.in
 -- input @ data/33554432-bodies-bin.in
+
+
+-- speed test 2
+-- ==
+-- entry: random_test
+-- input {10i32 1f32 1i32 1f32 1f32}
+-- input {100i32 1f32 1i32 1f32 1f32}
+-- input {1000i32 1f32 1i32 1f32 1f32}
+-- input {10000i32 1f32 1i32 1f32 1f32}
+-- input {100000i32 1f32 1i32 1f32 1f32}
+-- input {1000000i32 1f32 1i32 1f32 1f32}
+-- input {10000000i32 1f32 1i32 1f32 1f32}
+
+-- speed test naive
+-- ==
+-- entry: random_test_naive
+-- input {10i32 1f32 1i32 1f32 1f32}
+-- input {100i32 1f32 1i32 1f32 1f32}
+-- input {1000i32 1f32 1i32 1f32 1f32}
+-- input {10000i32 1f32 1i32 1f32 1f32}
+-- input {100000i32 1f32 1i32 1f32 1f32}
+-- input {1000000i32 1f32 1i32 1f32 1f32}
 import "lib/github.com/diku-dk/sorts/radix_sort"
 import "radixtree"
 import "types"
@@ -63,7 +85,7 @@ let step [n] (theta: f32) (dt: real) (speed: f32) (os: [n]pointmass) : [n]pointm
 
 
 let wrap_body (p: (real, real, real)) (v: (real, real, real)) (mass: real) : pointmass =
-  {pos=vec p.1 p.2 p.3, vel=vec v.1 v.2 v.3, mass}
+  {pos=vec p.0 p.1 p.2, vel=vec v.0 v.1 v.2, mass}
 
 
 let unwrap_body (p : pointmass) =
@@ -92,3 +114,20 @@ let main [n]
   let (xps', yps', zps') = unzip3 final_pos
   let (xvs', yvs', zvs') = unzip3 final_vel
   in (xps', yps', zps', xvs', yvs', zvs', final_mass)
+
+
+entry random_test (n: i32)
+                (theta: f32)
+                (steps: i32)
+                (dt: f32)
+                (speed: f32) =
+  let bodies = init_rand 0 n
+  in loop bodies for _i < steps do step theta dt speed bodies
+
+entry random_test_naive (n: i32)
+                (theta: f32)
+                (steps: i32)
+                (dt: f32)
+                (speed: f32) =
+  let bodies = init_rand 0 n
+  in loop bodies for _i < steps do step_naive dt speed bodies

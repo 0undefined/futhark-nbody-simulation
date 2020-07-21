@@ -14,7 +14,7 @@ type ptr = #leaf i32 | #inner i32
 type radix_inner = {left: ptr, right: ptr, parent: i32, delta: u8}
 
 type bh_inner  = {pos: v3, mass: real, left: ptr, right: ptr, parent: i32, delta: u8}
-type bh [n] = {L: [n]pointmass, I: []bh_inner}
+type~ bh [n] = {L: [n]pointmass, I: []bh_inner}
 
 -- Constructor for v3
 let vec x y z = {x, y, z}

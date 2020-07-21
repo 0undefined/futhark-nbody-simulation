@@ -1,3 +1,13 @@
+-- theta test
+-- ==
+-- entry: compare
+-- input {0.5f32 1000i32}
+-- input {0.7f32 1000i32}
+-- input {0.9f32 1000i32}
+-- input {1.1f32 1000i32}
+-- input {1.3f32 1000i32}
+
+
 import "BHtree"
 import "nbodysim"
 import "types"
@@ -65,4 +75,9 @@ let main [n]
   (zvs:    [n]f32)
   (masses: [n]f32) =
   let bodies : [n]pointmass = map3 wrap_body (zip3 xps yps zps) (zip3 xvs yvs zvs) masses
+  in simulate bodies theta
+
+
+entry compare theta n =
+  let bodies = init_rand 0 n
   in simulate bodies theta

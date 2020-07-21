@@ -53,7 +53,7 @@ let render [n] (os: [n]pointmass) (height: i32) (width: i32) : [height][width]i3
 
 
 module lys: lys with text_content = text_content = {
-  type state = {
+  type~ state = {
     objects: []pointmass,
     speed: f32,
     height: i32,
@@ -62,7 +62,7 @@ module lys: lys with text_content = text_content = {
   }
 
 
-  let init (seed: i32) (height: i32) (width: i32) : state =
+  let init (seed: u32) (height: i32) (width: i32) : state =
     {objects = init_solar seed 6, speed = 1f32, height, width, paused = true}
 
 
@@ -99,7 +99,7 @@ module lys: lys with text_content = text_content = {
     in unflatten s.height s.width (scatter (replicate (s.height * s.width) backdrop) is cs)
 
   type text_content = text_content
-  let text_format   = "FPS: %d\nspeed: %.2f
+  let text_format   = \() -> "FPS: %d\nspeed: %.2f
   v: %.2f x: %.2f y: %.2f z: %.2f m: %.2f
   v: %.2f x: %.2f y: %.2f z: %.2f m: %.2f
   v: %.2f x: %.2f y: %.2f z: %.2f m: %.2f
