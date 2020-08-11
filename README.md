@@ -4,6 +4,20 @@ This project aims to implement the barnes-hut algorithm which runs in
 _O(n log n)_ as compared to the naive version, which runs in _O(n²)_.
 
 
+## Fetching and compiling
+
+Assuming you have either Cuda or OpenCL installed, along with the futhark
+compiler of at least version v0.16.1
+1. Clone into this repository
+2. Change directory to [source](source)
+3. Run `futhark pkg sync`
+4. Run `make`
+5. Run `./nbodysim-gui` for a working (graphical) demo
+
+To run tests and benchmarks, substitude step 4 to
+`futhark [cuda|opencl] nbodysim.fut` -- use either opencl or cuda depending on
+your choice of backend. Lastly run the binary: `./nbodysim`
+
 # Result
 
 Should be a comparison between a collection of implementations:
@@ -27,7 +41,7 @@ scaling/implementation wise.
 * [x] Optimal implementation (Barnes Hut)
   + [x] Copy radix tree
   + [x] Copy morton codes
-  + [ ] Implement Octree
+  + [ ] ~~Implement Octree~~
   + [x] Apply simulation steps on said Octree
 
 
