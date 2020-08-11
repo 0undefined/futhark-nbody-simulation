@@ -21,8 +21,8 @@ let mk_BH_tree [n]
   let inners    = map empty_inner (mk_radix_tree (map morton pms'))
   let get_pointmass inners ptr =
     match ptr
-    case #leaf  i -> unsafe (pms'[i].pos,    pms'[i].mass)
-    case #inner i -> unsafe (inners[i].pos, inners[i].mass)
+    case #leaf  i -> #[unsafe] (pms'[i].pos,    pms'[i].mass)
+    case #inner i -> #[unsafe] (inners[i].pos, inners[i].mass)
 
   let update inners {pos=_, mass=_, left, right, parent, delta} =
     let avgpos p1 m1 p2 m2 =
@@ -45,7 +45,7 @@ let BH_fold [n] 'b
     (t: bh [n]) : b =
   (.0) <|
   loop (acc, cur, prev) = (initial, 0, #inner (-1)) while cur != -1 do
-      let node       = unsafe t.I[cur]
+      let node       = #[unsafe] t.I[cur]
       let from_left  = prev == node.left
       let from_right = prev == node.right
       let threshold_res = threshold node.delta node.pos
@@ -66,7 +66,7 @@ let BH_fold [n] 'b
 	           else #op (-1) pointmass node.parent (#inner cur)
         case #rec ptr -> match ptr
                          case #inner i -> #acc i (#inner cur)
-                         case #leaf  i -> #op i (unsafe t.L[i]) cur ptr
+                         case #leaf  i -> #op i (#[unsafe] t.L[i]) cur ptr
       in match calc_order
          case #acc cur ptr -> (acc, cur, ptr)
          case #op i other cur ptr -> (op acc i other, cur, ptr)

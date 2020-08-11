@@ -20,7 +20,7 @@ let step_fun = step 0.2
 
 
 -- return flat index + colour of point
-let drawpoint (x: f32) (y: f32) (z: f32) (w: f32) (height: i32) (width: i32) : (i32, i32) =
+let drawpoint (x: f32) (y: f32) (z: f32) (w: f32) (height: i32) (width: i32) : (i32, u32) =
   -- ignore if out of window bounds
   if   x < vx_bound_lower
     || x > vx_bound_upper
@@ -40,12 +40,12 @@ let drawpoint (x: f32) (y: f32) (z: f32) (w: f32) (height: i32) (width: i32) : (
     -- bright: one close boy
     let colour_weight = 0.2 + 0.8 * (w / mass_bound)
     let colour_z      = 0.2 + 0.8 * f32.sqrt (z**2 / (vy_bound_upper**2 + vy_bound_lower**2))
-    let colour        = argb.mix colour_weight argb.red colour_z argb.white -- argb.mix colour_weight argb.red colour_z argb.white
+    let colour        = argb.mix colour_weight argb.red colour_z argb.white
 
     in ((i32.f32 pos'.y) * width + (i32.f32 pos'.x), colour)
 
 
-let render [n] (os: [n]pointmass) (height: i32) (width: i32) : [height][width]i32 =
+let render [n] (os: [n]pointmass) (height: i32) (width: i32) : [height][width]u32 =
   let backdrop = argb.black
   let (is, cs) = unzip (map (\o -> drawpoint o.pos.x o.pos.y o.pos.z o.mass height width) os)
 
