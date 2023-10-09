@@ -1,7 +1,7 @@
 -- Types and constants
 import "lib/github.com/athas/vector/vspace"
 
-module real = f32
+module real = f64
 module v3   = mk_vspace_3d real
 
 type v3   = v3.vector
@@ -9,11 +9,11 @@ type real = v3.real
 
 type pointmass = {pos: v3, vel: v3, mass: real}
 
-type ptr = #leaf i32 | #inner i32
+type ptr = #leaf i64 | #inner i64
 
-type radix_inner = {left: ptr, right: ptr, parent: i32, delta: u8}
+type radix_inner = {left: ptr, right: ptr, parent: i64, delta: u8}
 
-type bh_inner  = {pos: v3, mass: real, left: ptr, right: ptr, parent: i32, delta: u8}
+type bh_inner  = {pos: v3, mass: real, left: ptr, right: ptr, parent: i64, delta: u8}
 type~ bh [n] = {L: [n]pointmass, I: []bh_inner}
 
 -- Constructor for v3
@@ -27,4 +27,4 @@ let vx_bound_upper : real =  600
 
 let mass_bound : real = 5000000
 
-let initial_vel = 9f32
+let initial_vel = 9f64

@@ -1,41 +1,41 @@
 -- speed test BH, varying theta
 -- ==
 -- entry: random_test
--- input {1024i32 0.0f32 1i32 1f32 1f32}
--- input {1024i32 0.1f32 1i32 1f32 1f32}
--- input {1024i32 0.2f32 1i32 1f32 1f32}
--- input {1024i32 0.3f32 1i32 1f32 1f32}
--- input {1024i32 0.4f32 1i32 1f32 1f32}
--- input {1024i32 0.5f32 1i32 1f32 1f32}
--- input {1024i32 0.6f32 1i32 1f32 1f32}
--- input {1024i32 0.7f32 1i32 1f32 1f32}
--- input {1024i32 0.8f32 1i32 1f32 1f32}
--- input {1024i32 0.9f32 1i32 1f32 1f32}
--- input {1024i32 1.0f32 1i32 1f32 1f32}
+-- input {1024i64 0.0f64 1i64 1f64 1f64}
+-- input {1024i64 0.1f64 1i64 1f64 1f64}
+-- input {1024i64 0.2f64 1i64 1f64 1f64}
+-- input {1024i64 0.3f64 1i64 1f64 1f64}
+-- input {1024i64 0.4f64 1i64 1f64 1f64}
+-- input {1024i64 0.5f64 1i64 1f64 1f64}
+-- input {1024i64 0.6f64 1i64 1f64 1f64}
+-- input {1024i64 0.7f64 1i64 1f64 1f64}
+-- input {1024i64 0.8f64 1i64 1f64 1f64}
+-- input {1024i64 0.9f64 1i64 1f64 1f64}
+-- input {1024i64 1.0f64 1i64 1f64 1f64}
 
 
 -- speed test BH, varying number of bodies
 -- ==
 -- entry: random_test
--- input {10i32 0.5f32 1i32 1f32 1f32}
--- input {100i32 0.5f32 1i32 1f32 1f32}
--- input {1000i32 0.5f32 1i32 1f32 1f32}
--- input {10000i32 0.5f32 1i32 1f32 1f32}
--- input {100000i32 0.5f32 1i32 1f32 1f32}
--- input {1000000i32 0.5f32 1i32 1f32 1f32}
--- input {10000000i32 0.5f32 1i32 1f32 1f32}
+-- input {10i64 0.5f64 1i64 1f64 1f64}
+-- input {100i64 0.5f64 1i64 1f64 1f64}
+-- input {1000i64 0.5f64 1i64 1f64 1f64}
+-- input {10000i64 0.5f64 1i64 1f64 1f64}
+-- input {100000i64 0.5f64 1i64 1f64 1f64}
+-- input {1000000i64 0.5f64 1i64 1f64 1f64}
+-- input {10000000i64 0.5f64 1i64 1f64 1f64}
 
 
 -- speed test naive, varying number of bodies
 -- ==
 -- entry: random_test_naive
--- input {10i32 0.5f32 1i32 1f32 1f32}
--- input {100i32 0.5f32 1i32 1f32 1f32}
--- input {1000i32 0.5f32 1i32 1f32 1f32}
--- input {10000i32 0.5f32 1i32 1f32 1f32}
--- input {100000i32 0.5f32 1i32 1f32 1f32}
--- input {1000000i32 0.5f32 1i32 1f32 1f32}
--- input {10000000i32 0.5f32 1i32 1f32 1f32}
+-- input {10i64 0.5f64 1i64 1f64 1f64}
+-- input {100i64 0.5f64 1i64 1f64 1f64}
+-- input {1000i64 0.5f64 1i64 1f64 1f64}
+-- input {10000i64 0.5f64 1i64 1f64 1f64}
+-- input {100000i64 0.5f64 1i64 1f64 1f64}
+-- input {1000000i64 0.5f64 1i64 1f64 1f64}
+-- input {10000000i64 0.5f64 1i64 1f64 1f64}
 
 import "lib/github.com/diku-dk/sorts/radix_sort"
 import "radixtree"
@@ -51,23 +51,23 @@ let advance_object (dt: real) (o: pointmass) (a: v3) : pointmass =
 
 
 let force (a: pointmass) (b: pointmass) : v3 =
-  let G     = 1f32 -- 6.674e-11
+  let G     = 1f64 -- 6.674e-11
   let r     = v3.(b.pos - a.pos)
-  let invr  = 1.0f32 / (v3.norm r + G) -- f32.sqrt rsqr
+  let invr  = 1.0f64 / (v3.norm r + G) -- f64.sqrt rsqr
   in v3.scale (b.mass * invr * invr * invr) r
 
 
-let step_naive [n] (dt: real) (speed: f32) (os: [n]pointmass) : [n]pointmass =
+let step_naive [n] (dt: real) (speed: f64) (os: [n]pointmass) : [n]pointmass =
   let apply_forces (o: pointmass) = map (force o) os |> reduce_comm (v3.+) v3.zero
   --let accelerations = map2 acceleration os forces
   let forces = map apply_forces os
   in map2 (advance_object (speed*dt)) os forces
 
 
-let step [n] (theta: f32) (dt: real) (speed: f32) (os: [n]pointmass) : [n]pointmass =
+let step [n] (theta: f64) (dt: real) (speed: f64) (os: [n]pointmass) : [n]pointmass =
   -- We can assume that the bodies are almost sorted, therefore use a sorting
   -- algorithm with best case on a (nearly|pre) sorted array
-  let sort = (\kf ks -> radix_sort_by_key kf u32.num_bits (u32.get_bit) ks)
+  let sort = (\kf ks -> radix_sort_by_key kf u64.num_bits (u64.get_bit) ks)
   let (bh_tree, min, max) = mk_BH_tree sort os
 
   -- Traverse/apply forces
@@ -90,18 +90,18 @@ let unwrap_body (p : pointmass) =
   ((p.pos.x, p.pos.y, p.pos.z), (p.vel.x, p.vel.y, p.vel.z), p.mass)
 
 
-let main [n]
-      (theta:     f32)
-      (steps:     i32)
-      (dt:        f32)
-      (speed:     f32)
-      (xps:    [n]f32)
-      (yps:    [n]f32)
-      (zps:    [n]f32)
-      (xvs:    [n]f32)
-      (yvs:    [n]f32)
-      (zvs:    [n]f32)
-      (masses: [n]f32) : ([n]f32, [n]f32, [n]f32, [n]f32, [n]f32, [n]f32, [n]f32) =
+entry main [n]
+      (theta:     f64)
+      (steps:     i64)
+      (dt:        f64)
+      (speed:     f64)
+      (xps:    [n]f64)
+      (yps:    [n]f64)
+      (zps:    [n]f64)
+      (xvs:    [n]f64)
+      (yvs:    [n]f64)
+      (zvs:    [n]f64)
+      (masses: [n]f64) : ([n]f64, [n]f64, [n]f64, [n]f64, [n]f64, [n]f64, [n]f64) =
 
   let bodies : [n]pointmass = map3 wrap_body (zip3 xps yps zps) (zip3 xvs yvs zvs) masses
 
@@ -114,18 +114,18 @@ let main [n]
   in (xps', yps', zps', xvs', yvs', zvs', final_mass)
 
 
-entry random_test (n: i32)
-                (theta: f32)
-                (steps: i32)
-                (dt: f32)
-                (speed: f32) =
+entry random_test (n: i64)
+                (theta: f64)
+                (steps: i64)
+                (dt: f64)
+                (speed: f64) =
   let bodies = init_rand 0 n
   in loop bodies for _i < steps do step theta dt speed bodies
 
-entry random_test_naive (n: i32)
-                (theta: f32)
-                (steps: i32)
-                (dt: f32)
-                (speed: f32) =
+entry random_test_naive (n: i64)
+                (theta: f64)
+                (steps: i64)
+                (dt: f64)
+                (speed: f64) =
   let bodies = init_rand 0 n
   in loop bodies for _i < steps do step_naive dt speed bodies

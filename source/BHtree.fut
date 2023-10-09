@@ -7,7 +7,7 @@ let lowest  = {x=real.lowest,  y=real.lowest,  z=real.lowest}
 
 
 let mk_BH_tree [n]
-    (sort_by_key: (pointmass -> u32) ->  [n]pointmass -> [n]pointmass)
+    (sort_by_key: (pointmass -> u64) ->  [n]pointmass -> [n]pointmass)
     (pms: [n]pointmass) : (bh [n], v3, v3) =
   let centers   = map (.pos) pms
   let min       = reduce_comm (v3.map2 real.min) highest centers
@@ -32,7 +32,7 @@ let mk_BH_tree [n]
     in {pos=avgpos pl ml pr mr, mass=ml + mr,
         left, right, parent, delta}
 
-  let depth  = t32 (f32.log2 (r32 n)) + 2
+  let depth  = t64 (f64.log2 (r64 <| i32.i64 n)) + 2
   let inners = loop inners for _i < depth do
                  map (update inners) inners
   in ({L = pms', I = inners}, min, max)
@@ -40,7 +40,7 @@ let mk_BH_tree [n]
 
 let BH_fold [n] 'b
     (threshold: u8 -> v3 -> bool)
-    (op: b -> i32 -> pointmass -> b)
+    (op: b -> i64 -> pointmass -> b)
     (initial: b)
     (t: bh [n]) : b =
   (.0) <|
@@ -57,7 +57,7 @@ let BH_fold [n] 'b
         else if !from_right && !threshold_res
         then #rec node.left
         else #norec
-      let calc_order : #op i32 pointmass i32 ptr | #acc i32 ptr =
+      let calc_order : #op i64 pointmass i64 ptr | #acc i64 ptr =
         match rec_child
         case #norec ->
           let pointmass = {pos=node.pos, mass=node.mass, vel=v3.zero}
@@ -73,17 +73,17 @@ let BH_fold [n] 'b
 
 
 let force (a: pointmass) (b: pointmass) : v3 =
-  let G     = 1f32 -- 6.674e-11
+  let G     = 1f64 -- 6.674e-11
   let r     = v3.(b.pos - a.pos)
-  let invr  = 1.0f32 / (v3.norm r + G) -- f32.sqrt rsqr
+  let invr  = 1.0f64 / (v3.norm r + G) -- f64.sqrt rsqr
   in v3.scale (b.mass * invr * invr * invr) r
 
 
-let cool_op (self_idx: i32) (self: pointmass) (accumulated_F: v3) (i: i32) (other: pointmass) : v3 =
+let cool_op (self_idx: i64) (self: pointmass) (accumulated_F: v3) (i: i64) (other: pointmass) : v3 =
   if self_idx == i then accumulated_F else (v3.+) accumulated_F (force self other)
 
 let cool_threshold (self_pos: v3) (theta: real) (delta: u8) (other_pos: v3) : bool =
-  (f32.u8 delta) / v3.(norm (self_pos - other_pos)) < theta
+  (f64.u8 delta) / v3.(norm (self_pos - other_pos)) < theta
 
 
 let threshold_denormalized min max (self_pos: v3) (theta: real) (delta: u8) (other_pos: v3) : bool =

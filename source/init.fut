@@ -4,11 +4,11 @@ import "types"
 import "BHtree"
 
 module rng_engine = minstd_rand
-module rand       = uniform_real_distribution f32 rng_engine
+module rand       = uniform_real_distribution f64 rng_engine
 
 
-let init_rand (seed: u32) (n: i32) : [n]pointmass =
-  let rng = rng_engine.split_rng n <| rng_engine.rng_from_seed [i32.u32 seed]
+let init_rand (seed: u64) (n: i64) : [n]pointmass =
+  let rng = rng_engine.split_rng n <| rng_engine.rng_from_seed [i32.u64 seed]
   let bodies = map (\r ->
     -- retarded but it works
     let (r, px) = rand.rand (vx_bound_lower/1.3, vx_bound_upper/1.3) r
@@ -28,22 +28,22 @@ let init_rand (seed: u32) (n: i32) : [n]pointmass =
   in bodies
 
 
-let init_circle (seed: u32) (n: i32) : [n]pointmass =
+let init_circle (seed: u64) (n: i64) : [n]pointmass =
   let c = vec 0 0 0
   let filter_fun (bs: []pointmass) = filter (\b ->
     let {x, y, z} = b.pos
-    in (x-c.x)**2 + (y-c.y)**2 + (z-c.z)**2 - (vx_bound_upper - vx_bound_lower |> (/4f32))**2f32 < 0f32
+    in (x-c.x)**2 + (y-c.y)**2 + (z-c.z)**2 - (vx_bound_upper - vx_bound_lower |> (/4f64))**2f64 < 0f64
   ) bs
 
   let bodies = loop b=(init_rand seed n |> filter_fun)
   while length b < n do
-    b++(init_rand (seed + u32.i32 (length b)) n |> filter_fun)
+    b++(init_rand (seed + u64.i64 (length b)) n |> filter_fun)
 
   in bodies[:n]
 
 
 -- Arguments are solely for compatability, `_n` must be equal to 5
-let init_solar (_seed: u32) (_n: i32) : [6]pointmass =
+let init_solar (_seed: u64) (_n: i64) : [6]pointmass =
   [{pos=vec (-290)     0  0, vel=vec    0  ( 122) 0, mass=mass_bound/25},  -- Big with orbit
    {pos=vec (-267)     0  0, vel=vec    0  ( 219) 0, mass=mass_bound/300}, -- orbit
    {pos=vec (  75)     0  0, vel=vec    0  ( 259) 0, mass=mass_bound/250},
@@ -53,16 +53,16 @@ let init_solar (_seed: u32) (_n: i32) : [6]pointmass =
 
 
 let init_heavy_center
-    (seed: u32)
-    (n: i32)
-    (init_func: u32 -> i32 -> [n]pointmass) : []pointmass =
+    (seed: u64)
+    (n: i64)
+    (init_func: u64 -> i64 -> [n]pointmass) : []pointmass =
   [{pos=v3.zero, vel=v3.zero, mass=mass_bound}] ++ init_func seed n
 
 
-let init_fast (seed: u32) (n: i32) (init_func: u32 -> i32 -> []pointmass) : [n]pointmass =
+let init_fast (seed: u64) (n: i64) (init_func: u64 -> i64 -> []pointmass) : [n]pointmass =
   -- Create pointmasses
   let bodies = init_func seed n
   -- Create BHTree / Sort
-  let sort = (\kf ks -> radix_sort_by_key kf u32.num_bits (u32.get_bit) ks)
+  let sort = (\kf ks -> radix_sort_by_key kf u64.num_bits (u64.get_bit) ks)
   let (tree, _, _) = mk_BH_tree sort bodies
   in (tree.L :> [n]pointmass)
